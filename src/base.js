@@ -1,4 +1,5 @@
 import $ from './utils/element';
+import { request_campaign } from './player/request';
 
 window.postMessage('player-exists', location.href);
 
@@ -13,5 +14,5 @@ $('body').sub('player-init', (event) => {
 
     source.script = $(source.script);
 
-    console.log(source);
+    request_campaign(source);
 });
