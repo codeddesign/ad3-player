@@ -4,7 +4,9 @@ class Player {
     constructor(campaign, source) {
         this.$campaign = new Campaign(campaign);
 
-        console.log(this);
+        this.$campaign.requestTags().then((tags) => {
+            console.log(tags);
+        });
     }
 }
 

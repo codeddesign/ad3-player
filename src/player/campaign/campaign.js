@@ -130,6 +130,30 @@ class Campaign {
 
         return this;
     }
+
+    /**
+     * Request campaign's tags.
+     *
+     * @return {Promise}
+     */
+    requestTags() {
+        return new Promise((resolve, reject) => {
+            const promises = [];
+
+            this.tags().forEach((tag) => {
+                if (tag.canBeLoaded()) {
+                    promises.push(
+                        tag.request()
+                    );
+                }
+            });
+
+            Promise.all(promises)
+                .then((finished) => {
+                    resolve(finished);
+                });
+        });
+    }
 }
 
 export default Campaign;
