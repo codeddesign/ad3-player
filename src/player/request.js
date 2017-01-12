@@ -1,3 +1,4 @@
+import Player from './player';
 import ajax from '../utils/ajax';
 import random from '../utils/random';
 import config from '../../config';
@@ -12,7 +13,7 @@ export const request_campaign = (source) => {
 
     ajax().campaign(uri)
         .then((response) => {
-            console.log(response);
+            new Player(response.text, source);
 
             // @todo: add tracking
         })
