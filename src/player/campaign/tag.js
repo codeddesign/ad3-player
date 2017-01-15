@@ -1,3 +1,4 @@
+import $instance from '../instance';
 import { request_tag } from '../request';
 import VastError from '../../vast/error';
 import device from '../../utils/device';
@@ -288,6 +289,9 @@ class Tag {
      * Schedule a tag to load again
      * with the given delay.
      *
+     * Notifies player when a tag gets loaded and
+     * also has ads using player.tagListener()
+     *
      * @return {Tag}
      */
     _schedule() {
@@ -303,8 +307,21 @@ class Tag {
                     if (this.failed()) {
                         return false;
                     }
+
+                    this._notifyPlayer();
                 });
         }, this.delay());
+
+        return this;
+    }
+
+    /**
+     * Notifies player that tag got updated.
+     *
+     * @return {Tag}
+     */
+    _notifyPlayer() {
+        $instance.player.tagListener(this);
 
         return this;
     }

@@ -15,6 +15,21 @@ class Player {
                 // console.log($instance);
             });
     }
+
+    /**
+     * Listener method.
+     *
+     * Gets called when a tag gets updated.
+     *
+     * @param {Tag} tag
+     *
+     * @return {Player}
+     */
+    tagListener(tag) {
+        console.info(`Tag with id #${tag.id()} updated.`);
+
+        return this;
+    }
 }
 
 export default Player;
