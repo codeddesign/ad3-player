@@ -1,12 +1,16 @@
 import $instance from './instance';
 import Campaign from './campaign/campaign';
+import View from './view/view';
 
 class Player {
     constructor(campaign, source) {
         $instance.add({
             player: this,
-            campaign: new Campaign(campaign)
+            campaign: new Campaign(campaign),
+            view: new View(source)
         });
+
+        $instance.view.setup();
 
         $instance.campaign.requestTags()
             .then((tags) => {
