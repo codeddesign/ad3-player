@@ -1,0 +1,150 @@
+a3m-wrapper {
+    all: revert;
+    z-index: 99999;
+    display: block;
+    max-width: 640px;
+    position: relative;
+    margin: 0 auto;
+    /* Required for safari mobile: */
+    padding: 0;
+}
+
+a3m-wrapper.sidebarinfinity {
+    min-width: 300px;
+    min-height: 169px;
+    max-width: 300px;
+    max-height: 250px;
+    border: none !important;
+    padding: 0 !important;
+}
+
+a3m-wrapper.sidebarinfinity a3m-backfill {
+    padding-bottom: initial;
+    height: initial;
+}
+
+a3m-wrapper.fixed {
+    position: fixed !important;
+    top: 0;
+}
+
+a3m-container {
+    font-family: Arial;
+    display: flex;
+    display: -webkit-flex;
+    position: relative;
+    height: 0;
+    padding-bottom: 56.25%;
+    margin-bottom: 0;
+    overflow: hidden;
+    width: 100%;
+    padding-top: 0;
+    clear: both;
+    /*background: #fdfdfd;*/
+    background: transparent;
+}
+
+a3m-backfill {
+    display: block;
+    position: relative;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    text-align: center;
+    background: transparent;
+}
+
+a3m-backfill>* {
+    margin: 0 auto;
+}
+
+a3m-slot {
+    z-index: 1;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    /* Interesting effect with it: */
+    /*height: 100%;*/
+}
+
+a3m-slot.hasiframe {
+    height: 100%;
+}
+
+a3m-slot.hidden {
+    z-index: 0;
+}
+
+a3m-slot>video {
+    cursor: pointer;
+}
+
+a3m-slot>video::-webkit-media-controls-play-button, a3m-slot video::-webkit-media-controls-start-playback-button {
+    opacity: 0;
+    pointer-events: none;
+    width: 5px;
+}
+
+a3m-sound {
+    z-index: 999;
+    position: absolute;
+    display: block;
+    bottom: calc(100% - 96%);
+    right: calc(100% - 96%);
+    width: 20px;
+    height: 20px;
+}
+
+a3m-sound.on {
+    background: url('../images/soundon.png');
+}
+
+a3m-sound.off {
+    background: url('../images/soundoff.png');
+}
+
+
+/** Others */
+
+a3m-wrapper .hidden {
+    visibility: hidden;
+}
+
+a3m-wrapper .none {
+    display: none;
+}
+
+
+/** Transitions */
+
+a3m-wrapper .nowait {
+    transition: none !important;
+}
+
+a3m-wrapper .slide {
+    padding-bottom: 56.25%;
+    transition: padding-bottom .8s;
+    -moz-transition: padding-bottom .8s ease-in-out;
+    -ms-transition: padding-bottom .8s ease-in-out;
+    -o-transition: padding-bottom .8s ease-in-out;
+    -webkit-transition: padding-bottom .8s ease-in-out;
+}
+
+a3m-wrapper .slide.slided {
+    padding-bottom: 0;
+}
+
+a3m-wrapper .fade {
+    opacity: 1;
+    transition: opacity .8s;
+    -moz-transition: opacity .8s ease-in-out;
+    -ms-transition: opacity .8s ease-in-out;
+    -o-transition: opacity .8s ease-in-out;
+    -webkit-transition: opacity .8s ease-in-out;
+}
+
+a3m-wrapper .fade.faded {
+    opacity: 0;
+}
