@@ -1,5 +1,6 @@
 import $instance from '../instance';
 import { request_tag } from '../request';
+import Slot from '../slot/slot';
 import VastError from '../../vast/error';
 import device from '../../utils/device';
 import { extend_object } from '../../utils/extend_object';
@@ -19,6 +20,7 @@ class Tag {
 
         this.$vast = false;
         this.$failed = false;
+        this.$slots = [];
 
         this.$attempts = 0;
 
@@ -193,6 +195,25 @@ class Tag {
     }
 
     /**
+     * @return {Array}
+     */
+    slots() {
+        if (this.failed()) {
+            return [];
+        }
+
+        if (this.finished()) {
+            this._schedule();
+
+            return [];
+        }
+
+        return this.$slots.filter((slot) => {
+            return slot.exists();
+        });
+    }
+
+    /**
      * @param {Integer} code
      * @param {String} info
      *
@@ -241,6 +262,7 @@ class Tag {
     _reset() {
         this.$vast = false;
         this.$failed = false;
+        this.$slots = [];
 
         return this;
     }
@@ -274,6 +296,8 @@ class Tag {
             if (!this.vast().hasLinear()) {
                 throw new VastError(201);
             }
+
+            this._createSlots();
         } catch (e) {
             if (typeof e.code == 'undefined') {
                 throw e;
@@ -322,6 +346,44 @@ class Tag {
      */
     _notifyPlayer() {
         $instance.player.tagListener(this);
+
+        return this;
+    }
+
+    /**
+     * @return {Tag}
+     */
+    _createSlots() {
+        let unsupported = {
+                device: 0,
+                player: 0
+            },
+            total = this.vast().ads().total();
+
+        this.vast().ads().forEach((ad) => {
+            const slot = (new Slot(this)).create(ad);
+            if (!slot.media()) {
+                unsupported.device++;
+
+                return false;
+            }
+
+            if (!slot.video()) {
+                unsupported.player++;
+
+                return false;
+            }
+
+            this.$slots.push(slot);
+        });
+
+        if (unsupported.device == total) {
+            throw new VastError(405);
+        }
+
+        if (unsupported.player == total) {
+            throw new VastError(403);
+        }
 
         return this;
     }
