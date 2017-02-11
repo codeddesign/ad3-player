@@ -36,7 +36,7 @@ class Ajax {
         });
     }
 
-    get(uri) {
+    get(uri, withoutCredentials = false) {
         return new Promise((resolve, reject) => {
             if (!this.xhr) {
                 reject(new AjaxError(-1, `Ajax is not available.`));
@@ -44,10 +44,27 @@ class Ajax {
                 return false;
             }
 
+            if (withoutCredentials) {
+                this.xhr.withCredentials = false;
+            }
+
             this.xhr.onreadystatechange = () => {
                 if (this.xhr.readyState === 4) {
                     if (this.xhr.status != 200) {
-                        reject(new AjaxError(this.xhr.status, `Failed to get '${uri} via Ajax.'`));
+                        if (!this.xhr.withCredentials || this.xhr.status > 0) {
+                            reject(new AjaxError(this.xhr.status, `Failed to get '${uri} via Ajax.'`));
+
+                            return false;
+                        }
+
+                        // Make new attempt without credentials
+                        (new Ajax()).get(uri, true)
+                            .then((r) => {
+                                resolve(r);
+                            })
+                            .catch((e) => {
+                                reject(e);
+                            });
 
                         return false;
                     }
