@@ -102,6 +102,22 @@ class Ajax {
     campaign(uri) {
         this.xhr.withCredentials = false;
 
+        const _open = this.xhr.open;
+        this.xhr.open = function(method, uri, async) {
+            _open.apply(this, arguments);
+
+            const headers = {
+                // 'Cache-Control': 'no-store, no-cache, must-revalidate',
+                // 'Pragma': 'no-cache',
+                // 'Expires': 'Sat, 01 Jan 2000 00:00:00 GMT',
+                // 'Vary': '*'
+            };
+
+            Object.keys(headers).forEach((key) => {
+                this.setRequestHeader(key, headers[key]);
+            });
+        }
+
         return this.json(uri);
     }
 
