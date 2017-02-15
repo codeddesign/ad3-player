@@ -26,3 +26,9 @@ if [ "$1" = "install" ]; then
 
     exit
 fi
+
+if [ "$1" = "flv" ]; then
+    ./flex_sdk/bin/mxmlc -output ../dist/assets/swf/flv.swf   ../flex/flv/FLVPlayer.as    -compiler.source-path ../flex/flv/   -target-player '11.1'
+
+    exit
+fi
