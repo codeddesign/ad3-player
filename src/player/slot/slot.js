@@ -1,5 +1,9 @@
 import $instance from '../instance';
 import Media from './media';
+import HTML5 from '../ad/html5';
+import VPAIDJavaScript from '../ad/vpaid_javascript';
+import Flash from '../ad/flash';
+import VPAIDFlash from '../ad/vpaid_flash';
 
 class Slot {
     constructor(tag) {
@@ -101,21 +105,21 @@ class Slot {
                 case 'video/mp4':
                 case 'video/ogg':
                 case 'video/webm':
-                    this.$video = true; // new HTML5(this);
+                    this.$video = new HTML5(this);
 
                     break;
                 case 'video/x-flv':
-                    this.$video = true; // new Flash(this);
+                    this.$video = new Flash(this);
 
                     break;
                 case 'application/x-shockwave-flash':
-                    this.$video = true; // new VPAIDFlash(this);
+                    this.$video = new VPAIDFlash(this);
 
                     break;
                 case 'text/javascript':
                 case 'application/javascript':
                 case 'application/x-javascript':
-                    this.$video = true; // new VPAIDJavaScript(this);
+                    this.$video = new VPAIDJavaScript(this);
 
                     break;
             }
@@ -130,6 +134,10 @@ class Slot {
             };
 
             this.$element = $instance.view.container().append('a3m-slot', attributes);
+
+            this.hide();
+
+            this.video().create();
         }
 
         return this;
