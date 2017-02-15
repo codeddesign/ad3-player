@@ -16,5 +16,8 @@ export const assets = [{
 export default {
     app_path: 'http://a3m.dev',
 
-    app_tracking: 'http://example.com'
+    app_tracking: 'http://example.com',
+
+    // VPAIDFlash: create it in a friendy iframe
+    vpaidflash_fif: true
 };

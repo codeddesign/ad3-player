@@ -32,3 +32,9 @@ if [ "$1" = "flv" ]; then
 
     exit
 fi
+
+if [ "$1" = "vpaid" ]; then
+    ./flex_sdk/bin/mxmlc -output ../dist/assets/swf/vpaid.swf ../flex/vpaid/VPAIDFlash.as -compiler.source-path ../flex/vpaid/ -target-player '11.1'
+
+    exit
+fi
