@@ -14,5 +14,7 @@ export const assets = [{
 }];
 
 export default {
-    app_path: 'http://a3m.dev'
+    app_path: 'http://a3m.dev',
+
+    app_tracking: 'http://example.com'
 };
