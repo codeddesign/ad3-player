@@ -256,7 +256,7 @@ class Flash {
      * @return {Flash}
      */
     _event(name, data) {
-        console.warn('flash event', name, data);
+        // console.warn('flash event', name, data);
 
         this.$called[name] = true;
 
@@ -268,6 +268,8 @@ class Flash {
                 videothirdquartile: Math.round(.75 * this.duration()),
             };
         }
+
+        this.slot().videoListener(name, data);
 
         return this;
     }

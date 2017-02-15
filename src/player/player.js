@@ -34,6 +34,21 @@ class Player {
 
         return this;
     }
+
+    /**
+     * Listener method.
+     *
+     * @param {Slot} slot
+     * @param {String} name
+     * @param {Mixed} data
+     *
+     * @return {Player}
+     */
+    slotListener(slot, name, data) {
+        if (!name.includes('timeupdate')) {
+            console.log('event:', name, data);
+        }
+    }
 }
 
 export default Player;

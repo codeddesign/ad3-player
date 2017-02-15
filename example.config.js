@@ -19,5 +19,10 @@ export default {
     app_tracking: 'http://example.com',
 
     // VPAIDFlash: create it in a friendy iframe
-    vpaidflash_fif: true
+    vpaidflash_fif: true,
+
+    // Timeouts in seconds
+    timeout: {
+        started: 5.0
+    }
 };

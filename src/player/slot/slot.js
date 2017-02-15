@@ -4,6 +4,7 @@ import HTML5 from '../ad/html5';
 import VPAIDJavaScript from '../ad/vpaid_javascript';
 import Flash from '../ad/flash';
 import VPAIDFlash from '../ad/vpaid_flash';
+import config from '../../../config';
 
 class Slot {
     constructor(tag) {
@@ -18,6 +19,8 @@ class Slot {
         this.$video = false;
 
         this.$element = false;
+
+        this._timeouts = {};
     }
 
     /**
@@ -138,6 +141,8 @@ class Slot {
             this.hide();
 
             this.video().create();
+
+            this.mark('got-created');
         }
 
         return this;
@@ -187,6 +192,186 @@ class Slot {
      */
     exists() {
         return (this.element()) ? true : false;
+    }
+
+    /**
+     * Listener method.
+     *
+     * @return {Slot}
+     */
+    videoListener(name, data) {
+        this.mark(name);
+
+        $instance.player.slotListener(this, name, data);
+
+        return this;
+    }
+
+    /**
+     * @return {Boolean}
+     */
+    isLoaded() {
+        return this._loaded;
+    }
+
+    /**
+     * @return {Boolean}
+     */
+    isStarted() {
+        return this._started;
+    }
+
+    /**
+     * @return {Boolean}
+     */
+    isPlaying() {
+        return this._playing;
+    }
+
+    /**
+     * @return {Boolean}
+     */
+    isPaused() {
+        return this._paused;
+    }
+
+    /**
+     * @return {Boolean}
+     */
+    isDone() {
+        return this._done;
+    }
+
+    /**
+     * Set properties to slot that help to determine it's status.
+     *
+     * Events:
+     * - loaded - gets called upon video load
+     * - started - gets called on start() and there's an actual video available
+     * - videostart - video starts playing
+     *
+     * Properties:
+     * - used - marks slot as being/was used
+     * - started - attempted to play video
+     * - playing - video is playing
+     * - paused - video is paused
+     * - done - video completed/skipped/stopped/error
+     * - timeout - holds timeout reference and gets cleared on videostart
+     *
+     * @param {String} event
+     *
+     * @return {Slot}
+     */
+    mark(event) {
+        this.clearEventTimeout(event);
+
+        switch (event) {
+            case 'loaded':
+                this._loaded = true;
+
+                break;
+            case 'started':
+                this.ad()._used = true;
+
+                this._started = true;
+
+                this.addEventTimeout('videostart', () => {
+                    if (!this.media().isVPAID()) {
+                        return false;
+                    }
+
+                    if (!this.isPlaying()) {
+                        this.videoListener('error', 901);
+                    }
+                }, config.timeout.started * 1000);
+                break;
+            case 'videostart':
+                this.ad()._used = true;
+
+                this._playing = true;
+
+                this.show();
+                break;
+            case 'paused':
+                this._paused = true;
+                break;
+            case 'playing':
+                this._paused = false;
+                break;
+            case 'skipped':
+            case 'stopped':
+            case 'complete':
+            case 'error':
+                this.ad()._used = true;
+
+                this._done = true;
+
+                this._playing = false;
+
+                this.destroy();
+
+                // tag schedule (Note: single exception when _schedule() it's called from outside Tag)
+                this.tag()._schedule();
+                break;
+            case 'got-selected':
+                // console.log('selected:', this);
+                break;
+            case 'got-created':
+                this.addEventTimeout('loaded', () => {
+                    if (!this.media().isVPAID()) {
+                        return false;
+                    }
+
+                    if (this.isDone()) {
+                        return false;
+                    }
+
+                    if (!this.isLoaded()) {
+                        this.videoListener('error', 901);
+                    }
+                }, this.tag().timeOut());
+                break;
+            case 'got-started':
+                this.addEventTimeout('started', () => {
+                    if (!this.media().isVPAID()) {
+                        return false;
+                    }
+
+                    if (!this.isStarted()) {
+                        this.videoListener('error', 901);
+                    }
+                }, config.timeout.started * 1000);
+                break;
+        }
+        return this;
+    }
+
+    /**
+     * @param {String} event
+     * @param {Function} _callback
+     * @param {Integer} _timeout
+     *
+     * @return {Slot}
+     */
+    addEventTimeout(event, _callback, _timeout) {
+        if (!this._timeouts[event]) {
+            this._timeouts[event] = setTimeout(_callback, _timeout);
+        }
+
+        return this;
+    }
+
+    /**
+     * @param {String} event
+     *
+     * @return {Slot}
+     */
+    clearEventTimeout(event) {
+        if (this._timeouts[event]) {
+            clearTimeout(this._timeouts[event]);
+        }
+
+        return this;
     }
 }
 

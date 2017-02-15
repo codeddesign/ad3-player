@@ -259,7 +259,7 @@ class VPAIDJavaScript {
 
         let data = (ev) ? ev.data : undefined;
 
-        console.warn('vpaidjavascript event', name, data);
+        // console.warn('vpaidjavascript event', name, data);
 
         this.$called[name] = true;
 
@@ -276,6 +276,8 @@ class VPAIDJavaScript {
                 data = 900;
             }
         }
+
+        this.slot().videoListener(name, data);
 
         return this;
     }

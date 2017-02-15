@@ -303,7 +303,7 @@ class HTML5 {
      * @return {HTML5}
      */
     _event(name, data) {
-        console.warn('html5 event', name, data);
+        // console.warn('html5 event', name, data);
 
         this.$called[name] = true;
 
@@ -315,6 +315,8 @@ class HTML5 {
                 videothirdquartile: Math.round(.75 * this.duration()),
             };
         }
+
+        this.slot().videoListener(name, data);
 
         return this;
     }

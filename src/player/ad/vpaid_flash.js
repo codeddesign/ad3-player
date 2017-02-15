@@ -413,7 +413,7 @@ class VPAIDFlash {
             return false;
         }
 
-        console.warn('vpaidflash event', name, data);
+        // console.warn('vpaidflash event', name, data);
 
         if (name == 'Error') {
             data = data.errorcode || data.message;
@@ -461,6 +461,8 @@ class VPAIDFlash {
                 }
             }, 1000);
         }
+
+        this.slot().videoListener(name.toLowerCase(), data);
 
         return this;
     }
