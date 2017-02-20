@@ -1,4 +1,5 @@
 import Player from './player';
+import Macro from './macro';
 import vastLoadXML from '../vast/base';
 import ajax from '../utils/ajax';
 import random from '../utils/random';
@@ -37,7 +38,7 @@ export const request_campaign = (source) => {
  * @return Promise}
  */
 export const request_tag = (uri, config = {}, mainVast = false, wrapperIndex = false) => {
-    uri = decode_uri(uri);
+    uri = Macro.uri(decode_uri(uri));
 
     return new Promise((resolve, reject) => {
         ajax().tag(uri)
