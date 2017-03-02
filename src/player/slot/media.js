@@ -13,10 +13,10 @@ const MEDIA_PRIORITY = new Set([
     'video/ogg',
     'video/webm',
     'video/x-flv',
-    'application/x-shockwave-flash',
     'text/javascript',
     'application/javascript',
-    'application/x-javascript'
+    'application/x-javascript',
+    'application/x-shockwave-flash'
 ]);
 
 class Media {
