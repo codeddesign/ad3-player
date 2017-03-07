@@ -1,5 +1,6 @@
 import Tag from './tag';
 import { extend_object } from '../../utils/extend_object';
+import config from '../../../config';
 
 class Campaign {
     /**
@@ -21,6 +22,65 @@ class Campaign {
 
         this.separateTags()
             .sortTags();
+    }
+
+    /**
+     * @return {Boolean}
+     */
+    startsWithSound() {
+        const info = this.__typeInfo();
+
+        return (info) ? info.with_sound : true;
+    }
+
+    /**
+     * @return {Boolean}
+     */
+    startsByUser() {
+        const info = this.__typeInfo();
+
+        return (info) ? info.by_user : true;
+    }
+
+    /**
+     * @return {Boolean}
+     */
+    isOnscroll() {
+        const info = this.__typeInfo();
+
+        return (info) ? info.name == 'onscroll' : false;
+    }
+
+    /**
+     * @return {Boolean}
+     */
+    isInfinity() {
+        const info = this.__typeInfo();
+
+        return (info) ? info.name == 'infinity' : false;
+    }
+
+    /**
+     * @return {Boolean}
+     */
+    isPreroll() {
+        const info = this.__typeInfo();
+
+        return (info) ? info.name == 'preroll' : false;
+    }
+
+    /**
+     * @return {Boolean|Object}
+     */
+    __typeInfo() {
+        let info = false;
+        config.campaigns.forEach((campaign) => {
+            if (campaign.ad_type_id == this.$ad_type) {
+                info = campaign;
+            }
+        });
+
+        return info;
     }
 
     /**
