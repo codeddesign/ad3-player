@@ -70,7 +70,17 @@ class Tag {
      * @return {Integer}
      */
     delay() {
-        return parseInt(this.$delay_time);
+        let delay_time = this.$delay_time;
+
+        if ($instance.campaign.isInfinity() && this.$infinity_delay_time) {
+            delay_time = this.$infinity_delay_time;
+        }
+
+        if (config.single_tag_testing && referrer.data._tid && this.$demo_data.delay_time) {
+            delay_time = this.$demo_data.delay_time;
+        }
+
+        return parseInt(delay_time);
     }
 
     /**
@@ -79,14 +89,34 @@ class Tag {
      * @return {Integer}
      */
     timeOut() {
-        return parseInt(this.$timeout_limit);
+        let timeout_limit = this.$timeout_limit;
+
+        if ($instance.campaign.isInfinity() && this.$infinity_timeout_limit) {
+            timeout_limit = this.$infinity_timeout_limit;
+        }
+
+        if (config.single_tag_testing && referrer.data._tid && this.$demo_data.timeout_limit) {
+            timeout_limit = this.$demo_data.timeout_limit;
+        }
+
+        return parseInt(timeout_limit);
     }
 
     /**
      * @return {Integer}
      */
     wrapperLimit() {
-        return this.$wrapper_limit;
+        let wrapper_limit = this.$wrapper_limit;
+
+        if ($instance.campaign.isInfinity() && this.$infinity_wrapper_limit) {
+            wrapper_limit = this.$infinity_wrapper_limit;
+        }
+
+        if (config.single_tag_testing && referrer.data._tid && this.$demo_data.wrapper_limit) {
+            wrapper_limit = this.$demo_data.wrapper_limit;
+        }
+
+        return wrapper_limit;
     }
 
     /**
