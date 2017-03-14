@@ -24,5 +24,23 @@ export default {
     // Timeouts in seconds
     timeout: {
         started: 5.0
-    }
+    },
+
+    // Campaign setup
+    campaigns: [{
+        ad_type_id: 1, // ad type id
+        with_sound: false, // starts with sound
+        by_user: false, // requires start by user
+        name: 'onscroll' // Important: unchangeable name
+    }, {
+        ad_type_id: 2,
+        with_sound: false,
+        by_user: false,
+        name: 'infinity'
+    }, {
+        ad_type_id: 3,
+        with_sound: true,
+        by_user: true,
+        name: 'preroll'
+    }]
 };
