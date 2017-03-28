@@ -1,6 +1,4 @@
-import $instance from '../instance';
 import eventsList from './events_list';
-import Macro from '../macro';
 import { referrer, object_to_query } from '../../utils/uri';
 import device from '../../utils/device';
 import random from '../../utils/random';
@@ -15,6 +13,10 @@ import config from '../../../config';
 const VISIT_KEY_NAME = '__a3m_visit';
 
 class Tracker {
+    constructor(player) {
+        this.__player = player;
+    }
+
     /**
      * Make 'image' request to given uri.
      *
@@ -23,8 +25,8 @@ class Tracker {
      *
      * @return {Tracker}
      */
-    static request(uri, macros = {}) {
-        uri = Macro.uri(uri, macros);
+    request(uri, macros = {}) {
+        uri = this.__player.macro.uri(uri, macros);
 
         if (config.app_tracking) {
             const image = new Image;
@@ -45,14 +47,14 @@ class Tracker {
      *
      * @return {Tracker}
      */
-    static app(info = {}, extra = {}, addExtra = false) {
-        if (!$instance.campaign) {
+    app(info = {}, extra = {}, addExtra = false) {
+        if (!this.__player.campaign) {
             return this;
         }
 
         info = Object.assign({
-            w: $instance.campaign.websiteId(),
-            campaign: $instance.campaign.id(),
+            w: this.__player.campaign.websiteId(),
+            campaign: this.__player.campaign.id(),
             referrer: referrer.simple,
             platform: device.mobile() ? 'mobile' : 'desktop',
             _rd: random()
@@ -74,7 +76,7 @@ class Tracker {
     /**
      * @return {Tracker}
      */
-    static visit() {
+    visit() {
         if (!window[VISIT_KEY_NAME]) {
             window[VISIT_KEY_NAME] = true;
 
@@ -87,7 +89,7 @@ class Tracker {
     /**
      * @return {Tracker}
      */
-    static backfill() {
+    backfill() {
         this.app({ source: 'backfill' });
 
         return this;
@@ -98,7 +100,7 @@ class Tracker {
      *
      * @return {Tracker}
      */
-    static campaign(evName) {
+    campaign(evName) {
         this.app({ source: 'campaign', status: evName });
 
         return this;
@@ -110,7 +112,7 @@ class Tracker {
      *
      * @return {Tracker}
      */
-    static tag(evName, tagId) {
+    tag(evName, tagId) {
         this.app({ source: 'tag', status: evName }, { tag: tagId }, true);
     }
 
@@ -121,7 +123,7 @@ class Tracker {
      *
      * @return {Tracker}
      */
-    static video(slot, evName, evData) {
+    video(slot, evName, evData) {
         evName = this.__eventName(slot, evName);
 
         // check event existence
@@ -195,7 +197,7 @@ class Tracker {
      *
      * @return {String}
      */
-    static __eventName(slot, name) {
+    __eventName(slot, name) {
         name = name.replace('video', '').toLowerCase();
 
         const aliases = {

@@ -1,4 +1,3 @@
-import $instance from '../instance';
 import Media from './media';
 import HTML5 from '../ad/html5';
 import VPAIDJavaScript from '../ad/vpaid_javascript';
@@ -7,8 +6,9 @@ import VPAIDFlash from '../ad/vpaid_flash';
 import config from '../../../config';
 
 class Slot {
-    constructor(tag) {
-        this.__tag = tag; // Note: tag contains $slots - possible circular problem
+    constructor(player, tag) {
+        this.__player = player;
+        this.__tag = tag;
 
         this.$ad = false;
 
@@ -94,7 +94,7 @@ class Slot {
 
         // set media
         if (this.creative()) {
-            const bestMedia = new Media();
+            const bestMedia = new Media(this.__player);
             bestMedia.setMediaFiles(
                 this.creative().mediaFiles().all()
             );
@@ -108,21 +108,21 @@ class Slot {
                 case 'video/mp4':
                 case 'video/ogg':
                 case 'video/webm':
-                    this.$video = new HTML5(this);
+                    this.$video = new HTML5(this.__player, this);
 
                     break;
                 case 'video/x-flv':
-                    this.$video = new Flash(this);
+                    this.$video = new Flash(this.__player, this);
 
                     break;
                 case 'application/x-shockwave-flash':
-                    this.$video = new VPAIDFlash(this);
+                    this.$video = new VPAIDFlash(this.__player, this);
 
                     break;
                 case 'text/javascript':
                 case 'application/javascript':
                 case 'application/x-javascript':
-                    this.$video = new VPAIDJavaScript(this);
+                    this.$video = new VPAIDJavaScript(this.__player, this);
 
                     break;
             }
@@ -136,7 +136,7 @@ class Slot {
                 }
             };
 
-            this.$element = $instance.view.container().append('a3m-slot', attributes);
+            this.$element = this.__player.view.container().append('a3m-slot', attributes);
 
             this.hide();
 
@@ -202,7 +202,7 @@ class Slot {
     videoListener(name, data) {
         this.mark(name);
 
-        $instance.player.slotListener(this, name, data);
+        this.__player.slotListener(this, name, data);
 
         return this;
     }

@@ -1,4 +1,3 @@
-import $instance from '../instance';
 import device from '../../utils/device';
 import { decode_uri } from '../../utils/uri';
 
@@ -20,7 +19,9 @@ const MEDIA_PRIORITY = new Set([
 ]);
 
 class Media {
-    constructor() {
+    constructor(player) {
+        this.__player = player;
+
         this.$framework = false;
 
         if (!device.flash()) {
@@ -148,7 +149,7 @@ class Media {
                 return a.width() - b.width();
             }
 
-            return a.width() - $instance.size.width;
+            return a.width() - this.__player.size.width;
         });
 
         return this;

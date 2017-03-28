@@ -1,13 +1,13 @@
-import $instance from '../instance';
 import Animator from './animator';
 import $ from '../../utils/element';
 import device from '../../utils/device';
-import Macro from '../macro';
 import { decode_uri } from '../../utils/uri';
 
 class HTML5 {
-    constructor(slot) {
+    constructor(player, slot) {
+        this.__player = player;
         this.__slot = slot;
+
         this.$unit = false;
         this.$called = {};
 
@@ -289,7 +289,7 @@ class HTML5 {
 
             const uri = this.slot().creative().clickThrough();;
             if (uri && uri.length) {
-                window.open(Macro.uri(decode_uri(uri)));
+                window.open(this.__player.macro.uri(decode_uri(uri)));
             }
         }
 

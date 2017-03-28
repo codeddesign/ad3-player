@@ -1,16 +1,19 @@
-import $instance from './instance';
 import device from '../utils/device';
 import { referrer } from '../utils/uri';
 import random from '../utils/random';
 
 class Macro {
+    constructor(player) {
+        this.__player = player;
+    }
+
     /**
      * @param {String} _uri
      * @param {Object} extra
      *
      * @return {String}
      */
-    static uri(_uri, extra = {}) {
+    uri(_uri, extra = {}) {
         // random number on each call
         const _random = random();
 
@@ -22,12 +25,12 @@ class Macro {
             referrer_root: referrer.base,
             referrer_url: referrer.simple,
 
-            width: Math.round($instance.size.width),
-            height: Math.round($instance.size.height),
+            width: Math.round(this.__player.size.width),
+            height: Math.round(this.__player.size.height),
 
-            campaign_id: $instance.campaign.id(),
-            ip_address: $instance.campaign.ip(),
-            w: $instance.campaign.websiteId(),
+            campaign_id: this.__player.campaign.id(),
+            ip_address: this.__player.campaign.ip(),
+            w: this.__player.campaign.websiteId(),
 
             timestamp: _random,
             cachebuster: _random,

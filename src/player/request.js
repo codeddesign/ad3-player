@@ -30,6 +30,7 @@ export const request_campaign = (source) => {
 /**
  * Makes a request to tag uri.
  *
+ * @param {Player} __player
  * @param {String} uri
  * @param {Object} config
  * @param {Boolean|Vast} mainVast
@@ -37,8 +38,9 @@ export const request_campaign = (source) => {
  *
  * @return Promise}
  */
-export const request_tag = (uri, config = {}, mainVast = false, wrapperIndex = false) => {
-    uri = decode_uri(uri);
+
+export const request_tag = (__player, uri, config = {}, mainVast = false, wrapperIndex = false) => {
+    uri = __player.macro.uri(decode_uri(uri));
 
     return new Promise((resolve, reject) => {
         ajax().tag(uri)
@@ -76,7 +78,7 @@ export const request_tag = (uri, config = {}, mainVast = false, wrapperIndex = f
                             mainWrapper.addRedirect();
 
                             promises.push(
-                                request_tag(wrapper.adTagUri(), config, mainVast, index)
+                                request_tag(__player, wrapper.adTagUri(), config, mainVast, index)
                             );
                         }
                     });

@@ -1,19 +1,20 @@
-import $instance from '../instance';
 import { iframe_template } from '../view/templates';
 import $ from '../../utils/element';
 import device from '../../utils/device';
 
 class VPAIDJavaScript {
-    constructor(slot) {
+    constructor(player, slot) {
+        this.__player = player;
         this.__slot = slot;
+
         this.$unit = false;
         this.$called = {};
 
         this.$config = {
             view: 'transparent',
             bitrate: this.slot().media().bitrate() || 59.97,
-            width: $instance.size.width,
-            height: $instance.size.height
+            width: this.__player.size.width,
+            height: this.__player.size.height
         };
 
         this.$events = [
@@ -113,7 +114,7 @@ class VPAIDJavaScript {
         _body.append('script', attrs, events);
 
         if (!device.iphoneInline()) {
-            $instance.view.sound().hide();
+            this.__player.view.sound().hide();
         }
 
         return this;

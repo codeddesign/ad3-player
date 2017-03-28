@@ -1,4 +1,3 @@
-import $instance from '../instance';
 import { request_tag } from '../request';
 import Slot from '../slot/slot';
 import VastError from '../../vast/error';
@@ -10,13 +9,15 @@ class Tag {
      * Creates Tag with given information
      * received after a /campaign request.
      *
+     * @param {player} player
      * @param {Object} info
-     * @param {Campaign} campaign
      *
      * @return {Tag}
      */
-    constructor(info) {
+    constructor(player, info) {
         extend_object(this, info);
+
+        this.__player = player;
 
         this.$vast = false;
         this.$failed = false;
@@ -72,12 +73,8 @@ class Tag {
     delay() {
         let delay_time = this.$delay_time;
 
-        if ($instance.campaign.isInfinity() && this.$infinity_delay_time) {
+        if (this.__player.campaign.isInfinity() && this.$infinity_delay_time) {
             delay_time = this.$infinity_delay_time;
-        }
-
-        if (config.single_tag_testing && referrer.data._tid && this.$demo_data.delay_time) {
-            delay_time = this.$demo_data.delay_time;
         }
 
         return parseInt(delay_time);
@@ -91,12 +88,8 @@ class Tag {
     timeOut() {
         let timeout_limit = this.$timeout_limit;
 
-        if ($instance.campaign.isInfinity() && this.$infinity_timeout_limit) {
+        if (this.__player.campaign.isInfinity() && this.$infinity_timeout_limit) {
             timeout_limit = this.$infinity_timeout_limit;
-        }
-
-        if (config.single_tag_testing && referrer.data._tid && this.$demo_data.timeout_limit) {
-            timeout_limit = this.$demo_data.timeout_limit;
         }
 
         return parseInt(timeout_limit);
@@ -108,12 +101,8 @@ class Tag {
     wrapperLimit() {
         let wrapper_limit = this.$wrapper_limit;
 
-        if ($instance.campaign.isInfinity() && this.$infinity_wrapper_limit) {
+        if (this.__player.campaign.isInfinity() && this.$infinity_wrapper_limit) {
             wrapper_limit = this.$infinity_wrapper_limit;
-        }
-
-        if (config.single_tag_testing && referrer.data._tid && this.$demo_data.wrapper_limit) {
-            wrapper_limit = this.$demo_data.wrapper_limit;
         }
 
         return wrapper_limit;
@@ -272,7 +261,7 @@ class Tag {
         this.$attempts++;
 
         return new Promise((resolve, reject) => {
-            request_tag(this.uri(), this)
+            request_tag(this.__player, this.uri(), this)
                 .then((vast) => {
                     // best place to set scheduled to 'false'
                     this.$scheduled = false;
@@ -375,7 +364,7 @@ class Tag {
      * @return {Tag}
      */
     _notifyPlayer() {
-        $instance.player.tagListener(this);
+        this.__player.tagListener(this);
 
         return this;
     }
@@ -391,7 +380,7 @@ class Tag {
             total = this.vast().ads().total();
 
         this.vast().ads().forEach((ad) => {
-            const slot = (new Slot(this)).create(ad);
+            const slot = (new Slot(this.__player, this)).create(ad);
             if (!slot.media()) {
                 unsupported.device++;
 

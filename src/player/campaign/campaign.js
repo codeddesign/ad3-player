@@ -10,12 +10,15 @@ class Campaign {
      * Info: assigns all data corresponding to response.campaign
      * directly in the Campaign (check 'extend_object()').
      *
+     * @param {Player} player
      * @param {Object} response
      *
      * @return {Campaign}
      */
-    constructor(response) {
+    constructor(player, response) {
         extend_object(this, response, ['campaign']);
+
+        this.__player = player;
 
         this.$nonguaranteed = [];
         this.$guaranteed = [];
@@ -148,7 +151,7 @@ class Campaign {
         }
 
         this.$tags.forEach((tag, index) => {
-            tag = new Tag(tag);
+            tag = new Tag(this.__player, tag);
 
             if (tag.isGuaranteed()) {
                 guaranteed.push(tag);

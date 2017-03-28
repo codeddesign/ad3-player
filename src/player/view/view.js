@@ -1,10 +1,11 @@
-import $instance from '../instance';
 import { wrapper } from './templates';
 import device from '../../utils/device';
 import proportion from '../../utils/proportion';
 
 class View {
-    constructor(source) {
+    constructor(player, source) {
+        this.__player = player;
+
         this.$source = source;
 
         this.$els = {};
@@ -30,11 +31,9 @@ class View {
      * @return {View}
      */
     saveSize() {
-        $instance.add({
-            size: proportion(this.wrapper().size().width)
-        });
+        this.__player.size = proportion(this.wrapper().size().width);
 
-        this.wrapper().sizeAsData($instance.size);
+        this.wrapper().sizeAsData(this.__player.size);
 
         return this;
     }

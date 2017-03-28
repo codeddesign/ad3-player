@@ -1,22 +1,21 @@
-import $instance from './instance';
+import Macro from './macro';
 import Campaign from './campaign/campaign';
 import View from './view/view';
 
 class Player {
     constructor(campaign, source) {
-        $instance.add({
-            player: this,
-            campaign: new Campaign(campaign),
-            view: new View(source)
-        });
+        this.macro = new Macro(this);
 
-        $instance.view.setup();
+        this.campaign = new Campaign(this, campaign);
+        this.view = new View(this, source);
 
-        $instance.campaign.requestTags()
+        this.view.setup();
+
+        this.campaign.requestTags()
             .then((tags) => {
-                $instance.add({ tags });
+                this.tags = tags;
 
-                // console.log($instance);
+                // console.log(this);
             });
     }
 

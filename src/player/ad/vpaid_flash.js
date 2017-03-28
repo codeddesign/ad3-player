@@ -1,14 +1,15 @@
-import $instance from '../instance';
 import { iframe_template } from '../view/templates';
 import $script from '../../utils/source';
 import random from '../../utils/random';
 import config from '../../../config';
 
 class VPAIDFlash {
-    constructor(slot) {
+    constructor(player, slot) {
+        this.__player = player;
+        this.__slot = slot;
+
         this.$id = `v${random()}`;
 
-        this.__slot = slot;
         this.$unit = false;
         this.$called = {};
 
@@ -23,8 +24,8 @@ class VPAIDFlash {
         this.$config = {
             view: 'transparent',
             bitrate: this.slot().media().bitrate() || 59.97,
-            width: $instance.size.width,
-            height: $instance.size.height
+            width: this.__player.size.width,
+            height: this.__player.size.height
         };
     }
 

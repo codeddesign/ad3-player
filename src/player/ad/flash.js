@@ -1,12 +1,13 @@
-import $instance from '../instance';
 import $script from '../../utils/source';
 import random from '../../utils/random';
 
 class Flash {
-    constructor(slot) {
+    constructor(player, slot) {
+        this.__player = player;
+        this.__slot = slot;
+
         this.$id = `v${random()}`;
 
-        this.__slot = slot;
         this.$unit = false;
         this.$called = {};
 
@@ -15,8 +16,8 @@ class Flash {
         this.$config = {
             view: 'transparent',
             bitrate: this.slot().media().bitrate() || 59.97,
-            width: $instance.size.width,
-            height: $instance.size.height
+            width: this.__player.size.width,
+            height: this.__player.size.height
         };
 
         this.$meta = false;
