@@ -1,9 +1,9 @@
 import Player from './player';
-import Macro from './macro';
 import vastLoadXML from '../vast/base';
 import ajax from '../utils/ajax';
+import device from '../utils/device';
 import random from '../utils/random';
-import { decode_uri } from '../utils/uri';
+import { decode_uri, referrer } from '../utils/uri';
 import config from '../../config';
 
 /**
@@ -12,7 +12,7 @@ import config from '../../config';
  * @param {Source} source
  */
 export const request_campaign = (source) => {
-    const uri = `${config.app_path}/campaign/${source.id}?_rd=${random()}`;
+    const uri = `${config.app_path}/campaign/${source.id}?_rd=${random()}&platform=${device.mobile() ? 'mobile' : 'desktop'}&referrer=${referrer.base}`;
 
     ajax().campaign(uri)
         .then((response) => {
@@ -38,7 +38,7 @@ export const request_campaign = (source) => {
  * @return Promise}
  */
 export const request_tag = (uri, config = {}, mainVast = false, wrapperIndex = false) => {
-    uri = Macro.uri(decode_uri(uri));
+    uri = decode_uri(uri);
 
     return new Promise((resolve, reject) => {
         ajax().tag(uri)
