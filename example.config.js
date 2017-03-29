@@ -42,5 +42,13 @@ export default {
         with_sound: true,
         by_user: true,
         name: 'preroll'
-    }]
+    }],
+
+    /**
+     * Request one tag only if a '?_tid=X' exists in site's query,
+     * where X is the tag id.
+     *
+     * If false, the _tid is being ignored.
+     */
+    single_tag_testing: true
 };

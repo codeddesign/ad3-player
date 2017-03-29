@@ -12,7 +12,11 @@ import config from '../../config';
  * @param {Source} source
  */
 export const request_campaign = (source) => {
-    const uri = `${config.app_path}/campaign/${source.id}?_rd=${random()}&platform=${device.mobile() ? 'mobile' : 'desktop'}&referrer=${referrer.base}`;
+    let uri = `${config.app_path}/campaign/${source.id}?_rd=${random()}&platform=${device.mobile() ? 'mobile' : 'desktop'}&referrer=${referrer.base}`;
+
+    if (config.single_tag_testing && referrer.data._tid) {
+        uri += `&test=${referrer.data._tid}`;
+    }
 
     ajax().campaign(uri)
         .then((response) => {

@@ -3,6 +3,8 @@ import Slot from '../slot/slot';
 import VastError from '../../vast/error';
 import device from '../../utils/device';
 import { extend_object } from '../../utils/extend_object';
+import { referrer } from '../../utils/uri';
+import config from '../../../config';
 
 class Tag {
     /**
@@ -77,6 +79,10 @@ class Tag {
             delay_time = this.$infinity_delay_time;
         }
 
+        if (config.single_tag_testing && referrer.data._tid && this.$demo_data.delay_time) {
+            delay_time = this.$demo_data.delay_time;
+        }
+
         return parseInt(delay_time);
     }
 
@@ -92,6 +98,10 @@ class Tag {
             timeout_limit = this.$infinity_timeout_limit;
         }
 
+        if (config.single_tag_testing && referrer.data._tid && this.$demo_data.timeout_limit) {
+            timeout_limit = this.$demo_data.timeout_limit;
+        }
+
         return parseInt(timeout_limit);
     }
 
@@ -103,6 +113,10 @@ class Tag {
 
         if (this.__player.campaign.isInfinity() && this.$infinity_wrapper_limit) {
             wrapper_limit = this.$infinity_wrapper_limit;
+        }
+
+        if (config.single_tag_testing && referrer.data._tid && this.$demo_data.wrapper_limit) {
+            wrapper_limit = this.$demo_data.wrapper_limit;
         }
 
         return wrapper_limit;
@@ -151,6 +165,10 @@ class Tag {
      * @return {Boolean}
      */
     canBeLoaded() {
+        if (config.single_tag_testing && referrer.data._tid) {
+            return true;
+        }
+
         if (!this.isActive()) {
             return false;
         }
