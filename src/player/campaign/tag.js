@@ -1,3 +1,4 @@
+import Cache from '../cache';
 import { request_tag } from '../request';
 import Slot from '../slot/slot';
 import VastError from '../../vast/error';
@@ -279,11 +280,17 @@ class Tag {
         this.$attempts++;
 
         return new Promise((resolve, reject) => {
+            const { key, vast } = Cache.read(this.__player.campaign, this);
+            if (vast) {
+                this._validateRequestVast(vast);
+
+                resolve(this);
+
+                return false;
+            }
+
             request_tag(this.__player, this.uri(), this)
                 .then((vast) => {
-                    // best place to set scheduled to 'false'
-                    this.$scheduled = false;
-
                     this._validateRequestVast(vast);
 
                     resolve(this);
@@ -310,6 +317,9 @@ class Tag {
      * @return {Tag}
      */
     _validateRequestVast(vast) {
+        // best place to set scheduled to 'false'
+        this.$scheduled = false;
+
         try {
             this.$vast = vast;
 
@@ -371,7 +381,7 @@ class Tag {
 
                     this._notifyPlayer();
                 });
-        }, this.delay());
+        }, (this.vast()._fromCache) ? 0 : this.delay());
 
         return this;
     }

@@ -1,11 +1,13 @@
 export default {
     'filled': {
         code: 0,
-        source: false
+        source: false,
+        cacheCheck: true // check event if Vast is from cache
     },
     'loaded': {
         code: 1,
-        source: false
+        source: false,
+        cacheCheck: true
     },
     'start': {
         code: 2,

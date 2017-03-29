@@ -3,6 +3,7 @@ import HTML5 from '../ad/html5';
 import VPAIDJavaScript from '../ad/vpaid_javascript';
 import Flash from '../ad/flash';
 import VPAIDFlash from '../ad/vpaid_flash';
+import Cache from '../cache';
 import config from '../../../config';
 
 class Slot {
@@ -267,10 +268,14 @@ class Slot {
 
         switch (event) {
             case 'loaded':
+                Cache.write(this.__player.campaign, this.__tag);
+
                 this._loaded = true;
 
                 break;
             case 'started':
+                Cache.remove(this.__tag.vast()._cacheKey);
+
                 this.ad()._used = true;
 
                 this._started = true;
@@ -286,6 +291,8 @@ class Slot {
                 }, config.timeout.started * 1000);
                 break;
             case 'videostart':
+                Cache.remove(this.__tag.vast()._cacheKey);
+
                 this.ad()._used = true;
 
                 this._playing = true;
@@ -302,6 +309,8 @@ class Slot {
             case 'stopped':
             case 'complete':
             case 'error':
+                Cache.remove(this.__tag.vast()._cacheKey);
+
                 this.ad()._used = true;
 
                 this._done = true;

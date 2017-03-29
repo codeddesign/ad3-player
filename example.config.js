@@ -50,5 +50,8 @@ export default {
      *
      * If false, the _tid is being ignored.
      */
-    single_tag_testing: true
+    single_tag_testing: false,
+
+    // If false, tags that triggered 'loaded' won't be added to storage
+    caching: false
 };

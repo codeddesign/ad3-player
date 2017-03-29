@@ -183,6 +183,13 @@ class Tracker {
             this.request(uri, macros);
         });
 
+        if (event.cacheCheck && slot.tag().vast()._fromCache) {
+            if (!slot.media().isVPAID()) return this;
+
+            // don't track 'loaded' - again - for vpaid
+            if (event.code == 1) return this;
+        }
+
         this.app({ tag: slot.tag().id(), source: 'ad', status: event.code }, appExtraData);
 
         return this;
