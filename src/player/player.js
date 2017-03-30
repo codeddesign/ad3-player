@@ -19,6 +19,35 @@ class Player {
 
                 // console.log(this);
             });
+
+        this.$selected = false;
+    }
+
+    /**
+     * @return {Slot|Boolean}
+     */
+    selected() {
+        if (this.$selected && (!this.$selected.isDone() || this.$selected.isPlaying())) {
+            return this.$selected;
+        }
+
+        this.$selected = false;
+
+        (this.tags || []).some((tag) => {
+            return tag.slots().some((slot) => {
+                if (!slot.ad()._used) {
+                    this.$selected = slot;
+
+                    slot.mark('got-selected');
+
+                    return true;
+                }
+
+                return false;
+            });
+        });
+
+        return this.$selected;
     }
 
     /**
