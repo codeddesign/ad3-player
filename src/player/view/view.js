@@ -95,6 +95,14 @@ class View {
      * @return {View}
      */
     setup() {
+        const campaign = this.__player.campaign;
+
+        if (campaign.isOnscroll()) {
+            this.container()
+                .addClass('nowait slide slided')
+                .removeClass('nowait', true);
+        }
+
         return this;
     }
 
@@ -118,6 +126,72 @@ class View {
                 .removeClass('on')
                 .addClass('off');
         }
+
+        return this;
+    }
+
+    /**
+     * @param {Boolean} show
+     *
+     * @return {View}
+     */
+    transition(show = true) {
+        const campaign = this.__player.campaign;
+
+        const _target = this.container();
+
+        if (campaign.isOnscroll()) {
+            const _class = 'slided';
+
+            if (show) {
+                this.resize();
+
+                _target.removeClass(_class);
+
+                return this;
+            }
+
+            _target.addClass(_class);
+        }
+
+        return this;
+    }
+
+    /**
+     * Resize video.
+     *
+     * Note: using $selected directly.
+     *
+     * @param {Object} size
+     *
+     * @return {View}
+     */
+    resize(size) {
+        size = size || this.__player.size;
+
+        try {
+            // width and height only
+            size = { width: size.width, height: size.height };
+
+            const _selected = this.__player.$selected;
+
+            // video
+            _selected.video().resize(
+                size.width,
+                size.height
+            );
+
+            // slot
+            _selected.element().size(size);
+
+            // iframe
+            const _iframe = _selected.element().find('iframe', false);
+            if (_iframe) {
+                _iframe.size(size);
+            }
+        } catch (e) {
+            // console.warn(e);
+        };
 
         return this;
     }

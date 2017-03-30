@@ -100,6 +100,8 @@ class Player {
                 break;
             case 'videostart':
                 this.view.soundControl();
+
+                this.view.transition();
                 break;
             case 'skipped':
             case 'stopped':
@@ -120,6 +122,11 @@ class Player {
      * @return {Player}
      */
     play(byUser = false) {
+        // transition: if none selected
+        if (!this.selected()) {
+            this.view.transition(false);
+        }
+
         if (!this.tags || !this.selected() || !this.selected().isLoaded()) {
             return this;
         }
