@@ -268,6 +268,11 @@ class Slot {
 
         switch (event) {
             case 'loaded':
+                // tracking: filled event for NON-VPAID
+                if (!this.media().isVPAID()) {
+                    this.__player.tracker.video(this, 'filled');
+                }
+
                 Cache.write(this.__player.campaign, this.__tag);
 
                 this._loaded = true;
@@ -291,6 +296,11 @@ class Slot {
                 }, config.timeout.started * 1000);
                 break;
             case 'videostart':
+                // tracking: filled event for VPAID
+                if (this.media().isVPAID()) {
+                    this.__player.tracker.video(this, 'filled');
+                }
+
                 Cache.remove(this.__tag.vast()._cacheKey);
 
                 this.ad()._used = true;

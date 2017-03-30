@@ -20,9 +20,11 @@ export const request_campaign = (source) => {
 
     ajax().campaign(uri)
         .then((response) => {
-            new Player(response.text, source);
+            const __player = new Player(response.text, source);
 
-            // @todo: add tracking
+            __player.tracker
+                .visit()
+                .campaign(response.status);
         })
         .catch((e) => {
             console.error(e);
@@ -50,7 +52,7 @@ export const request_tag = (__player, uri, config = {}, mainVast = false, wrappe
         ajax().tag(uri)
             .then((response) => {
                 if (wrapperIndex === false) {
-                    // @todo: add tracking
+                    __player.tracker.tag(response.status, config.id());
                 }
 
                 const vast = vastLoadXML(response.text),
@@ -132,7 +134,7 @@ export const request_tag = (__player, uri, config = {}, mainVast = false, wrappe
                 if (wrapperIndex === false) {
                     console.error(e);
 
-                    // @todo: add tracking
+                    __player.tracker.tag(e.code, config.id());
                 }
 
                 resolve(mainVast);

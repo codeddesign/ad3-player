@@ -1,10 +1,12 @@
 import Macro from './macro';
+import Tracker from './tracker/tracker';
 import Campaign from './campaign/campaign';
 import View from './view/view';
 
 class Player {
     constructor(campaign, source) {
         this.macro = new Macro(this);
+        this.tracker = new Tracker(this);
 
         this.campaign = new Campaign(this, campaign);
         this.view = new View(this, source);
@@ -44,9 +46,11 @@ class Player {
      * @return {Player}
      */
     slotListener(slot, name, data) {
-        if (!name.includes('timeupdate')) {
-            console.log('event:', name, data);
-        }
+        // if (!name.includes('timeupdate')) {
+        //     console.log('event:', name, data);
+        // }
+
+        this.tracker.video(slot, name, data);
     }
 }
 

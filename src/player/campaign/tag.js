@@ -262,7 +262,18 @@ class Tag {
 
         console.error(this.failed());
 
-        // @todo: add tracking
+        this.__player.tracker.video({
+            tag: () => {
+                return {
+                    id: () => this.id()
+                }
+            },
+            ad: () => {
+                return {
+                    error: () => []
+                };
+            }
+        }, 'error', code);
 
         this._schedule();
 
