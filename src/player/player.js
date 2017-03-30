@@ -2,6 +2,8 @@ import Macro from './macro';
 import Tracker from './tracker/tracker';
 import Campaign from './campaign/campaign';
 import View from './view/view';
+import device from '../utils/device';
+import $ from '../utils/element';
 
 class Player {
     constructor(campaign, source) {
@@ -11,16 +13,19 @@ class Player {
         this.campaign = new Campaign(this, campaign);
         this.view = new View(this, source);
 
-        this.view.setup();
-
         this.campaign.requestTags()
             .then((tags) => {
                 this.tags = tags;
 
                 // console.log(this);
+
+                // Don't wait for user events
+                this.play();
             });
 
         this.$selected = false;
+
+        this._addWindowListeners();
     }
 
     /**
@@ -62,6 +67,9 @@ class Player {
     tagListener(tag) {
         console.info(`Tag with id #${tag.id()} updated.`);
 
+        // Don't wait for user events
+        this.play();
+
         return this;
     }
 
@@ -80,6 +88,133 @@ class Player {
         // }
 
         this.tracker.video(slot, name, data);
+
+        switch (name) {
+            case 'loaded':
+                this.play();
+                break;
+            case 'started':
+                slot.video().volume(
+                    this.campaign.startsWithSound()
+                );
+                break;
+            case 'videostart':
+                this.view.soundControl();
+                break;
+            case 'skipped':
+            case 'stopped':
+            case 'complete':
+            case 'error':
+                this.view.soundControl(true);
+
+                this.play();
+                break;
+        }
+    }
+
+    /**
+     * Start video.
+     *
+     * @param {Boolean} byUser
+     *
+     * @return {Player}
+     */
+    play(byUser = false) {
+        if (!this.tags || !this.selected() || !this.selected().isLoaded()) {
+            return this;
+        }
+
+        if (device.mobile() && this.selected().media().isVPAID() && !byUser) {
+            if (!device.igadget() || !device.iphoneInline()) {
+                return this;
+            }
+        }
+
+        // video: pause/resume
+        if (this.selected().isPlaying()) {
+            // Note: order of conditions matters
+            if (this.view.mustPause() && this.selected() && !this.selected().isPaused()) {
+                this.selected().video().pause();
+
+                return this;
+            }
+
+            // Note: order of conditions matters
+            if (this.view.mustResume() && this.selected() && this.selected().isPaused()) {
+                this.selected().video().resume();
+
+                return this;
+            }
+        }
+
+        // video: start
+        if (this.view.mustStart() && this.selected() && !this.selected().isStarted()) {
+            this.selected().video().start();
+
+            // Add fallback, because 'started' event normally gets triggered immediately
+            this.selected().mark('got-started');
+        }
+
+        return this;
+    }
+
+
+    /**
+     * Add DOM event listeners.
+     *
+     * @return {Player}
+     */
+    _addWindowListeners() {
+        const _isPlaying = () => {
+            return this.selected() && this.selected().isPlaying();
+        }
+
+        const _isPaused = () => {
+            return this.selected() && this.selected().isPaused();
+        }
+
+        /**
+         * Events
+         */
+
+        this.view.container().sub('transitionend', (ev, $el) => {
+            //
+        });
+
+        $().sub('touchend', () => {
+            this.play(true);
+        });
+
+        this.view.sound()
+            .sub('click', (ev, $el) => {
+                if (_isPlaying()) {
+                    this.selected().video().volume(
+                        $el.hasClass('off')
+                    );
+
+                    $el.toggleClasses('on', 'off');
+                }
+            });
+
+        $().sub('scroll', () => {
+            this.play(device.mobile());
+        });
+
+        if (!device.mobile()) {
+            this.view.container()
+                .sub('mouseover', () => {
+                    if (_isPlaying()) {
+                        this.selected().video().volume(true);
+                    }
+                })
+                .sub('mouseout', () => {
+                    if (_isPlaying()) {
+                        this.selected().video().volume(false);
+                    }
+                });
+        }
+
+        return this;
     }
 }
 

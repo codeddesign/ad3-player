@@ -1,6 +1,7 @@
 import { wrapper } from './templates';
 import device from '../../utils/device';
 import proportion from '../../utils/proportion';
+import scrolling from '../../utils/scrolling';
 
 class View {
     constructor(player, source) {
@@ -21,6 +22,8 @@ class View {
         });
 
         this.saveSize();
+
+        this.setup();
     }
 
     /**
@@ -117,6 +120,29 @@ class View {
         }
 
         return this;
+    }
+
+    /**
+     * @return {Boolean}
+     */
+    mustStart() {
+        let percentage = scrolling.down() ? 50 : 100;
+
+        return this.wrapper().visible() >= percentage;
+    }
+
+    /**
+     * @return {Boolean}
+     */
+    mustResume() {
+        return this.wrapper().visible() >= 50;
+    }
+
+    /**
+     * @return {Boolean}
+     */
+    mustPause() {
+        return !this.mustResume();
     }
 }
 
