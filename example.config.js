@@ -53,5 +53,11 @@ export default {
     single_tag_testing: false,
 
     // If false, tags that triggered 'loaded' won't be added to storage
-    caching: false
+    caching: false,
+
+    // Onscroll workflow config
+    onscroll: {
+        desktop: 'aside', // 'basic', 'aside'
+        mobile: 'basic' // 'basic', 'aside'
+    }
 };

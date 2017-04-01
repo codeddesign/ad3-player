@@ -39,8 +39,20 @@ a3m-wrapper .nowait {
 }
 
 a3m-wrapper a3m-container {
+    top: initial;
+    right: initial;
+    bottom: initial;
+    left: initial;
+}
+
+a3m-wrapper a3m-container:not(.fixed-custom) {
     position: relative;
     height: auto;
+}
+
+a3m-container.fixed-custom {
+    position: fixed;
+    z-index: 999999999;
 }
 
 a3m-wrapper a3m-slot video::-webkit-media-controls-play-button, a3m-wrapper a3m-slot video::-webkit-media-controls-start-playback-button {

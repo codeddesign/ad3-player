@@ -2,6 +2,7 @@ import { wrapper } from './templates';
 import device from '../../utils/device';
 import proportion from '../../utils/proportion';
 import scrolling from '../../utils/scrolling';
+import config from '../../../config';
 
 class View {
     constructor(player, source) {
@@ -138,20 +139,38 @@ class View {
     transition(show = true) {
         const campaign = this.__player.campaign;
 
-        const _target = this.container();
-
-        if (campaign.isOnscroll()) {
-            const _class = 'slided';
-
+        if (campaign.isOnscroll() && this.__onscrollBasic()) {
             if (show) {
-                this.resize();
+                this.container().size(this.__player.size);
 
-                _target.removeClass(_class);
+                this.container().removeClass('slided');
 
                 return this;
             }
 
-            _target.addClass(_class);
+            this.container().addClass('slided');
+
+            return this;
+        }
+
+        if (campaign.isOnscroll() && this.__onscrollAside()) {
+            if (show) {
+                this.container().removeClass('slided');
+
+                return this;
+            }
+
+            this.wrapper().attrRemove('style');
+
+            this.container()
+                .removeClass('fixed-custom')
+                .attrRemove('style')
+                .size(this.__player.size);
+
+            this.container()
+                .addClass('slided');
+
+            return this;
         }
 
         return this;
@@ -202,6 +221,20 @@ class View {
     mustStart() {
         let percentage = scrolling.down() ? 50 : 100;
 
+        const campaign = this.__player.campaign;
+
+        if (campaign.isOnscroll()) {
+            if (this.wrapper().visible() >= 50) {
+                this.__removeCustomPosition();
+            } else {
+                this.__addCustomPosition();
+            }
+
+            if (this.__onscrollAside()) {
+                return true;
+            }
+        }
+
         return this.wrapper().visible() >= percentage;
     }
 
@@ -209,6 +242,14 @@ class View {
      * @return {Boolean}
      */
     mustResume() {
+        const campaign = this.__player.campaign;
+
+        if (campaign.isOnscroll()) {
+            if (this.__onscrollAside()) {
+                return true;
+            }
+        }
+
         return this.wrapper().visible() >= 50;
     }
 
@@ -217,6 +258,107 @@ class View {
      */
     mustPause() {
         return !this.mustResume();
+    }
+
+    /**
+     * @return {View|Boolean}
+     */
+    __addCustomPosition() {
+        if (!this.__onscrollAside()) {
+            return false;
+        }
+
+        const $script = this.$source.script,
+            mode = device.mobile() ? 'mobile' : 'desktop',
+            styling = $script.attr(`styling-${mode}`) || $script.attr('styling') || 'left: 10, bottom: 10, width: 320',
+            style = {
+                width: this.__player.size.width
+            };
+
+        styling.split(',').forEach((key) => {
+            key = key.trim();
+
+            let value = '0';
+            if (key.includes(':')) {
+                [key, value] = key.split(':');
+            }
+
+            // ignore height if added
+            if (key != 'height') {
+                style[key.trim()] = parseInt(value.trim());
+            }
+        });
+
+        // wrapper: keep size
+        this.wrapper().style('height', this.__player.size.height, true);
+
+        // container: add custom style
+        Object.keys(style).forEach((key) => {
+            const value = style[key];
+
+            this.container().style(key, value, true);
+
+            if (key == 'width') {
+                // height: keep proportions; ignore given height if any
+                style.height = proportion(value).height;
+
+                this.container().style('height', style.height, true);
+            }
+        });
+
+        // container: add custom fixed class
+        this.container().addClass('fixed-custom');
+
+        // video: resize
+        this.resize(style);
+
+        return this;
+    }
+
+    /**
+     * @return {View|Boolean}
+     */
+    __removeCustomPosition() {
+        if (!this.__onscrollAside()) {
+            return false;
+        }
+
+        // container: remove custom fixed class, style, set new size
+        this.container()
+            .removeClass('fixed-custom')
+            .attrRemove('style')
+            .size(this.__player.size);
+
+        // wrapper: remove kept size
+        this.wrapper().attrRemove('style');
+
+        // video: resize to initial size
+        this.resize();
+
+        return this;
+    }
+
+    /**
+     * @return {Boolean}
+     */
+    __onscrollMode(name) {
+        const mode = device.mobile() ? 'mobile' : 'desktop';
+
+        return config.onscroll[mode] == name;
+    }
+
+    /**
+     * @return {Boolean}
+     */
+    __onscrollBasic() {
+        return this.__onscrollMode('basic');
+    }
+
+    /**
+     * @return {Boolean}
+     */
+    __onscrollAside() {
+        return this.__onscrollMode('aside');
     }
 }
 
