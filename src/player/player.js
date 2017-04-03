@@ -2,6 +2,7 @@ import Macro from './macro';
 import Tracker from './tracker/tracker';
 import Campaign from './campaign/campaign';
 import View from './view/view';
+import Backfill from './view/backfill';
 import device from '../utils/device';
 import $ from '../utils/element';
 
@@ -12,6 +13,7 @@ class Player {
 
         this.campaign = new Campaign(this, campaign);
         this.view = new View(this, source);
+        this.backfill = new Backfill(this);
 
         this.campaign.requestTags()
             .then((tags) => {

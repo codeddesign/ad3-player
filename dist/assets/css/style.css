@@ -95,3 +95,8 @@ a3m-wrapper .slide:not(.hasiframe) {
 a3m-wrapper .slide.slided {
     max-height: 0 !important;
 }
+
+a3m-wrapper a3m-backfill {
+    display: flex;
+    width: 100%;
+}

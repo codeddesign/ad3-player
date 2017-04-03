@@ -141,6 +141,10 @@ class View {
 
         if (campaign.isOnscroll() && this.__onscrollBasic()) {
             if (show) {
+                if (this.__player.backfill.created()) {
+                    this.__player.backfill.hide();
+                }
+
                 this.container().size(this.__player.size);
 
                 this.container().removeClass('slided');
@@ -149,6 +153,12 @@ class View {
             }
 
             this.container().addClass('slided');
+
+            if (this.__player.backfill.created()) {
+                this.container().attrRemove('style'); // 'cancel' transition
+
+                this.__player.backfill.show();
+            }
 
             return this;
         }
@@ -164,8 +174,11 @@ class View {
 
             this.container()
                 .removeClass('fixed-custom')
-                .attrRemove('style')
-                .size(this.__player.size);
+                .attrRemove('style');
+
+            if (!this.__player.backfill.created()) {
+                this.container().size(this.__player.size);
+            }
 
             this.container()
                 .addClass('slided');
@@ -224,7 +237,7 @@ class View {
         const campaign = this.__player.campaign;
 
         if (campaign.isOnscroll()) {
-            if (this.wrapper().visible() >= 50) {
+            if (this.wrapper().visible() >= 50 && !this.__player.backfill.created()) {
                 this.__removeCustomPosition();
             } else {
                 this.__addCustomPosition();
@@ -290,7 +303,9 @@ class View {
         });
 
         // wrapper: keep size
-        this.wrapper().style('height', this.__player.size.height, true);
+        if (!this.__player.backfill.created() && this.__player.$selected && this.__player.$selected.isPlaying()) {
+            this.wrapper().style('height', this.__player.size.height, true);
+        }
 
         // container: add custom style
         Object.keys(style).forEach((key) => {

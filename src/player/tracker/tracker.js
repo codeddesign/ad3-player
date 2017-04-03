@@ -90,7 +90,7 @@ class Tracker {
      * @return {Tracker}
      */
     backfill() {
-        this.app({ source: 'backfill' });
+        this.app({ source: 'backfill', backfill: this.__player.campaign.$backfill.id });
 
         return this;
     }
