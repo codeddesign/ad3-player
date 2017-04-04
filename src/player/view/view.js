@@ -2,6 +2,7 @@ import { wrapper } from './templates';
 import device from '../../utils/device';
 import proportion from '../../utils/proportion';
 import scrolling from '../../utils/scrolling';
+import { referrer } from '../../utils/uri';
 import config from '../../../config';
 
 class View {
@@ -25,6 +26,12 @@ class View {
         this.saveSize();
 
         this.setup();
+
+        // Set inview to 'true' when in test mode
+        if (config.single_tag_testing && referrer.data._tid) {
+            config.onscroll.desktop.inview = true;
+            config.onscroll.mobile.inview = true;
+        }
     }
 
     /**
@@ -232,6 +239,10 @@ class View {
      * @return {Boolean}
      */
     mustStart() {
+        if (!this.__onscrollInview()) {
+            return true;
+        }
+
         let percentage = scrolling.down() ? 50 : 100;
 
         const campaign = this.__player.campaign;
@@ -255,6 +266,10 @@ class View {
      * @return {Boolean}
      */
     mustResume() {
+        if (!this.__onscrollInview()) {
+            return true;
+        }
+
         const campaign = this.__player.campaign;
 
         if (campaign.isOnscroll()) {
@@ -270,6 +285,10 @@ class View {
      * @return {Boolean}
      */
     mustPause() {
+        if (!this.__onscrollInview()) {
+            return false;
+        }
+
         return !this.mustResume();
     }
 
@@ -357,9 +376,22 @@ class View {
      * @return {Boolean}
      */
     __onscrollMode(name) {
-        const mode = device.mobile() ? 'mobile' : 'desktop';
+        const platform = device.mobile() ? 'mobile' : 'desktop';
 
-        return config.onscroll[mode] == name;
+        return config.onscroll[platform].mode == name;
+    }
+
+    /**
+     * @return {Boolean}
+     */
+    __onscrollInview() {
+        if (this.__onscrollAside()) {
+            return true;
+        }
+
+        const platform = device.mobile() ? 'mobile' : 'desktop';
+
+        return config.onscroll[platform].inview;
     }
 
     /**

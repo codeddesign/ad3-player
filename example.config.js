@@ -57,7 +57,13 @@ export default {
 
     // Onscroll workflow config
     onscroll: {
-        desktop: 'aside', // 'basic', 'aside'
-        mobile: 'basic' // 'basic', 'aside'
+        desktop: {
+            mode: 'aside', // 'basic', 'aside'
+            inview: true // if false it will ignore in view conditions
+        },
+        mobile: {
+            mode: 'basic', // 'basic', 'aside'
+            inview: true
+        }
     }
 };
