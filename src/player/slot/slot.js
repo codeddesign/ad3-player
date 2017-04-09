@@ -139,12 +139,23 @@ class Slot {
 
             this.$element = this.__player.view.container().append('a3m-slot', attributes);
 
+            // size
+            this._setMinimumSize(this.__player.size);
+
             this.hide();
 
             this.video().create();
 
             this.mark('got-created');
         }
+
+        return this;
+    }
+
+    _setMinimumSize(_size = { width: null, height: null }) {
+        this.element()
+            .style('minWidth', _size.width, true)
+            .style('minHeight', _size.height, true);
 
         return this;
     }
@@ -268,6 +279,9 @@ class Slot {
 
         switch (event) {
             case 'loaded':
+                // clear minimum size
+                this._setMinimumSize();
+
                 // tracking: filled event for NON-VPAID
                 if (!this.media().isVPAID()) {
                     this.__player.tracker.video(this, 'filled');
@@ -296,6 +310,9 @@ class Slot {
                 }, config.timeout.started * 1000);
                 break;
             case 'videostart':
+                // clear minimum size - sanity fallback
+                this._setMinimumSize();
+
                 // tracking: filled event for VPAID
                 if (this.media().isVPAID()) {
                     this.__player.tracker.video(this, 'filled');
