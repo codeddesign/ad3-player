@@ -19,7 +19,8 @@ a3m-wrapper a3m-slot {
     z-index: 1;
     position: absolute;
     left: 0;
-    top: 0;
+    /* height of the presented by */
+    top: 20px;
 }
 
 a3m-wrapper a3m-slot.hidden {
@@ -80,7 +81,8 @@ a3m-wrapper a3m-sound.off {
 }
 
 a3m-wrapper .slide {
-    max-height: 360px;
+    /* 360px + presentedby */
+    max-height: 380px;
     transition: max-height .8s;
     -moz-transition: max-height .8s ease-in-out;
     -ms-transition: max-height .8s ease-in-out;
@@ -98,5 +100,20 @@ a3m-wrapper .slide.slided {
 
 a3m-wrapper a3m-backfill {
     display: flex;
+    width: 100%;
+    flex-direction: column;
+}
+
+a3m-wrapper a3m-presentedby {
+    display: block;
+    width: 100%;
+    min-height: 20px;
+    max-height: 20px;
+    background-image: url('../images/ad3_presentedby.png');
+    background-repeat: no-repeat;
+    background-position: center center;
+}
+
+a3m-wrapper a3m-container > a, a3m-wrapper a3m-backfill > a {
     width: 100%;
 }

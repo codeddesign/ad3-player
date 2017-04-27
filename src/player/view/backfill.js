@@ -103,7 +103,8 @@ class Backfill {
                 .removeClass('nowait', true);
         }
 
-        const _iframe = this.container().html(iframe_template()),
+        const placeholder = this.container().find('a3m-placeholder'),
+            _iframe = placeholder.replaceHtml(iframe_template()),
             _iWindow = _iframe.node.contentWindow,
             _iDocument = _iWindow.document;
 
@@ -131,8 +132,15 @@ class Backfill {
         _iDocument.__add(_embed);
 
         watchIframeSize(_iDocument, _iframe.node, (size) => {
+            let _height = size.height;
+
+            // assuming it has some content and add extra height
+            if (_height >= 200) {
+                _height += this.__player.view.presentedby().size().height;
+            }
+
             this.container()
-                .style('maxHeight', size.height, true)
+                .style('maxHeight', _height, true)
                 .removeClass('slided');
 
             // track: attempt
