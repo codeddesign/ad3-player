@@ -27,6 +27,7 @@ class Tag {
         this.$slots = [];
 
         this.$attempts = 0;
+        this.$firstRequest = true;
 
         this.$scheduled = false;
     }
@@ -328,6 +329,8 @@ class Tag {
      * @return {Tag}
      */
     _validateRequestVast(vast) {
+        this.$firstRequest = false;
+
         // best place to set scheduled to 'false'
         this.$scheduled = false;
 
@@ -376,8 +379,8 @@ class Tag {
      *
      * @return {Tag}
      */
-    _schedule() {
-        if (this.$scheduled) {
+    _schedule(s) {
+        if (this.$scheduled || this.$firstRequest) {
             return this;
         }
 

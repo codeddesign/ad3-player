@@ -201,20 +201,17 @@ class Campaign {
      */
     requestTags() {
         return new Promise((resolve, reject) => {
-            const promises = [];
+            const tags = [];
 
             this.tags().forEach((tag) => {
                 if (tag.canBeLoaded()) {
-                    promises.push(
-                        tag.request()
-                    );
+                    tag.request();
+
+                    tags.push(tag);
                 }
             });
 
-            Promise.all(promises)
-                .then((finished) => {
-                    resolve(finished);
-                });
+            resolve(tags);
         });
     }
 }
