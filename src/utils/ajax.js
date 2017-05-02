@@ -1,3 +1,5 @@
+import config from '../../config';
+
 export class AjaxError {
     constructor(code, message) {
         this.code = code;
@@ -48,6 +50,12 @@ class Ajax {
                 this.xhr.withCredentials = false;
             }
 
+            this.xhr.timeout = config.timeout.ajax * 1000;
+
+            this.xhr.ontimeout = () => {
+                this.xhr._timedout = true;
+            };
+
             this.xhr.onreadystatechange = () => {
                 if (this.xhr.readyState === 4) {
                     if (this.xhr.status != 200) {
@@ -57,14 +65,24 @@ class Ajax {
                             return false;
                         }
 
-                        // Make new attempt without credentials
-                        (new Ajax()).get(uri, true)
-                            .then((r) => {
-                                resolve(r);
-                            })
-                            .catch((e) => {
-                                reject(e);
-                            });
+                        // Make new attempt without credentials with
+                        //  small delay in case of timeout because
+                        //  ontimeout() gets called afterwards.
+                        setTimeout(() => {
+                            if (this.xhr._timedout) {
+                                reject(new AjaxError(1001, `Timedout: ${uri}.`));
+
+                                return false;
+                            }
+
+                            (new Ajax()).get(uri, true)
+                                .then((r) => {
+                                    resolve(r);
+                                })
+                                .catch((e) => {
+                                    reject(e);
+                                });
+                        }, 1);
 
                         return false;
                     }

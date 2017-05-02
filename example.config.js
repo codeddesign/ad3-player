@@ -23,6 +23,7 @@ export default {
 
     // Timeouts in seconds
     timeout: {
+        ajax: 3.0,
         started: 5.0
     },
 
