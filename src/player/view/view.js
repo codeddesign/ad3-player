@@ -155,7 +155,7 @@ class View {
 
         if (campaign.isOnscroll() && this.__onscrollBasic()) {
             if (show) {
-                if (this.__player.backfill.created()) {
+                if (this.__player.backfill.revealed()) {
                     this.__player.backfill.hide();
                 }
 
@@ -169,9 +169,21 @@ class View {
             this.container().addClass('slided');
 
             if (this.__player.backfill.created()) {
-                this.container().attrRemove('style'); // 'cancel' transition
-
                 this.__player.backfill.show();
+
+                if (this.__player.backfill.revealed()) {
+                    this.container().attrRemove('style'); // 'cancel' transition
+
+                    return this;
+                }
+
+                if (this.__player.backfill.mustReveal()) {
+                    this.__player.backfill.reveal();
+
+                    return this;
+                }
+
+                return this;
             }
 
             return this;
@@ -186,7 +198,11 @@ class View {
 
             this.wrapper().attrRemove('style');
 
-            if (!this.__player.backfill.created()) {
+            if (!this.__player.backfill.revealed()) {
+                if (this.__player.backfill.mustReveal()) {
+                    this.__player.backfill.reveal();
+                }
+
                 this.container().size(this.__playerSize());
 
                 if (this.container().hasClass('fixed-custom')) {
@@ -256,7 +272,7 @@ class View {
         const campaign = this.__player.campaign;
 
         if (campaign.isOnscroll()) {
-            if (this.wrapper().visible() >= 50 && !this.__player.backfill.created()) {
+            if (this.wrapper().visible() >= 50 && !this.__player.backfill.revealed()) {
                 this.__removeCustomPosition();
             } else {
                 this.__addCustomPosition();
@@ -330,7 +346,7 @@ class View {
         });
 
         // wrapper: keep size
-        if (!this.__player.backfill.created() && this.__player.$selected && this.__player.$selected.isPlaying()) {
+        if (!this.__player.backfill.revealed() && this.__player.$selected && this.__player.$selected.isPlaying()) {
             this.wrapper().style('height', this.__playerSize().height, true);
         }
 

@@ -11,8 +11,10 @@ class Backfill {
 
         this.$tracked = false;
 
+        this.$revealed = false;
+
         $().sub('scroll', () => {
-            this.setup();
+            this.reveal();
         });
 
         // direct setup: attempt
@@ -69,6 +71,50 @@ class Backfill {
     }
 
     /**
+     * @return {Boolean}
+     */
+    mustReveal() {
+        return this.__player.view.wrapper().visible() >= 70;
+    }
+
+    /**
+     * @return {Boolean}
+     */
+    revealed() {
+        return this.$revealed;
+    }
+
+    /**
+     * @return {Backfill}
+     */
+    reveal() {
+        if (!this.created()) {
+            return this;
+        }
+
+        if (!this.mustReveal()) {
+            return this;
+        }
+
+        const player = this.__player;
+
+        if (player.$selected && player.$selected.isPlaying()) {
+            return this;
+        }
+
+        this.$revealed = true;
+
+        // transition
+        this.container()
+            .removeClass('slided');
+
+        // track: attempt
+        this.track();
+
+        return this;
+    }
+
+    /**
      * @return {Backfill}
      */
     setup() {
@@ -81,14 +127,6 @@ class Backfill {
 
         if (!_backfill || this.created()) {
             return this;
-        }
-
-        if (player.view.wrapper().visible() < 70) {
-            return this;
-        }
-
-        if (player.$selected && player.$selected.isPlaying()) {
-            return false;
         }
 
         // mark as created
@@ -140,11 +178,7 @@ class Backfill {
             }
 
             this.container()
-                .style('maxHeight', _height, true)
-                .removeClass('slided');
-
-            // track: attempt
-            this.track();
+                .style('maxHeight', _height, true);
         });
     }
 
@@ -154,7 +188,7 @@ class Backfill {
      * @return {Backfill}
      */
     track() {
-        if (this.created() && !this.tracked() && this.container().visible() >= 50) {
+        if (this.created() && this.revealed() && !this.tracked() && this.container().visible() >= 50) {
             this.$tracked = true;
 
             this.__player.tracker.backfill();
