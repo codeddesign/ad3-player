@@ -1,5 +1,5 @@
-import $ from './utils/element';
-import { request_campaign } from './player/request';
+import $ from '../utils/element';
+import { request_campaign } from './request';
 
 window.postMessage('player-exists', location.href);
 
