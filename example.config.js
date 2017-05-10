@@ -3,14 +3,16 @@ export const assets = [{
     tag: 'script',
     attributes: {
         src: `http://a3m.dev/player.js`
-    }
+    },
+    must_wait: true
 }, {
     name: 'styling',
     tag: 'link',
     attributes: {
         rel: 'stylesheet',
         href: `https://a3m.dev/style.css`
-    }
+    },
+    must_wait: false
 }];
 
 export default {

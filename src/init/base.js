@@ -13,9 +13,12 @@ window.addEventListener('message', (ev) => {
 
 const promises = [];
 assets.forEach((asset) => {
-    promises.push(
-        (new Asset(asset)).load()
-    )
+    const load_promise = (new Asset(asset)).load();
+    if (asset.must_wait) {
+        promises.push(
+            load_promise
+        )
+    }
 });
 
 Promise.all(promises)
