@@ -68,5 +68,8 @@ export default {
             mode: 'basic', // 'basic', 'aside'
             inview: true
         }
-    }
+    },
+
+    // Changes behaviour
+    production: true
 };
