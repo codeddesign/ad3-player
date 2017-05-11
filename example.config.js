@@ -71,5 +71,14 @@ export default {
     },
 
     // Changes behaviour
-    production: true
+    production: true,
+
+    /*
+     * List of events that need to be ignored by tracker by name.
+     *
+     * Note:You can see a full list of names in src/player/tracker/event_list
+     */
+    tracking_ignore_events: [
+        'error'
+    ]
 };

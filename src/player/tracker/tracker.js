@@ -190,7 +190,16 @@ class Tracker {
             if (event.code == 1) return this;
         }
 
-        this.app({ tag: slot.tag().id(), source: 'ad', status: event.code }, appExtraData);
+        let ignore_event = false;
+        if (config.production) {
+            ignore_event = config.tracking_ignore_events.some((name) => {
+                return name.toLowerCase() == evName;
+            });
+        }
+
+        if (!ignore_event) {
+            this.app({ tag: slot.tag().id(), source: 'ad', status: event.code }, appExtraData);
+        }
 
         return this;
     }
