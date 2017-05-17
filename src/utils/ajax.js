@@ -128,6 +128,30 @@ class Ajax {
 
         return this.get(uri);
     }
+
+    payload(object) {
+        if (!config.dump.enabled) {
+            return false;
+        }
+
+        let can_dump = false;
+        config.dump.tags.forEach((tag_id) => {
+            if (object.tag == tag_id) {
+                can_dump = true;
+            }
+        });
+
+        if (!can_dump) {
+            return false;
+        }
+
+        const string = JSON.stringify(object);
+
+        this.xhr.open('POST', config.dump.uri);
+        this.xhr.withCredentials = false;
+        this.xhr.setRequestHeader('Content-Type', 'application/json');
+        this.xhr.send(string);
+    }
 }
 
 export default () => {

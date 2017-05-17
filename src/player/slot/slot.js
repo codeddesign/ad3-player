@@ -5,6 +5,8 @@ import Flash from '../ad/flash';
 import VPAIDFlash from '../ad/vpaid_flash';
 import Cache from '../cache';
 import config from '../../../config';
+import device from '../../utils/device';
+import ajax from '../../utils/ajax';
 
 class Slot {
     constructor(player, tag) {
@@ -148,6 +150,18 @@ class Slot {
 
             this.mark('got-created');
         }
+
+        // debugging
+        try {
+            const dump_data = {
+                device: (device.mobile()) ? 'mobile' : 'desktop',
+                vast: this.tag().vast().clean(),
+                source: this.media().source(),
+                tag: this.tag().id(),
+            };
+
+            ajax().payload(dump_data);
+        } catch (e) {}
 
         return this;
     }

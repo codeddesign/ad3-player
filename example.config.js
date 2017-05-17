@@ -80,5 +80,12 @@ export default {
      */
     tracking_ignore_events: [
         'error'
-    ]
+    ],
+
+    // Dump tag information
+    dump: {
+        uri: 'http://a3m.dev/dump/',
+        enabled: false,
+        tags: []
+    }
 };
