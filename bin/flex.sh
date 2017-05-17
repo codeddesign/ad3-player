@@ -19,7 +19,7 @@ if [ "$1" = "install" ]; then
         sed -i .previous "s/D32='-d32'/echo '-d3 was replaced..'/g" ./flex_sdk/bin/mxmlc;
 
         # get players
-        # git clone git://github.com/nexussays/playerglobal.git ./flex_sdk/frameworks/libs/player
+        # git clone git://github.com/nexussays/playerglobal.git ./bin/flex_sdk/frameworks/libs/player_new
 
         echo 'installation complete...'
     fi
@@ -28,13 +28,13 @@ if [ "$1" = "install" ]; then
 fi
 
 if [ "$1" = "flv" ]; then
-    ./flex_sdk/bin/mxmlc -output ../dist/assets/swf/flv.swf   ../flex/flv/FLVPlayer.as    -compiler.source-path ../flex/flv/   -target-player '11.1'
+    ./flex_sdk/bin/mxmlc -static-link-runtime-shared-libraries -output ../dist/assets/swf/flv.swf   ../flex/flv/FLVPlayer.as    -compiler.source-path ../flex/flv/   -target-player '25.0'
 
     exit
 fi
 
 if [ "$1" = "vpaid" ]; then
-    ./flex_sdk/bin/mxmlc -output ../dist/assets/swf/vpaid.swf ../flex/vpaid/VPAIDFlash.as -compiler.source-path ../flex/vpaid/ -target-player '11.1'
+    ./flex_sdk/bin/mxmlc -static-link-runtime-shared-libraries -output ../dist/assets/swf/vpaid.swf ../flex/vpaid/VPAIDFlash.as -compiler.source-path ../flex/vpaid/ -target-player '25.0'
 
     exit
 fi

@@ -28,7 +28,7 @@ package {
         private var vid:Video;
         private var client:Object;
         private var nsVol:SoundTransform;
-        private var metaData:Object;
+        private var mtDt:Object;
         private var jsHandler:String;
         private var clickThrough:String;
         private var stopped:Boolean = false;
@@ -117,7 +117,7 @@ package {
         }
 
         private function adjustVideoHeight():void {
-            var height:Number = metaData.width * stage.stageHeight / stage.stageWidth;
+            var height:Number = mtDt.width * stage.stageHeight / stage.stageWidth;
 
             vid.width = stage.stageWidth;
             vid.height = height;
@@ -137,7 +137,7 @@ package {
             function timeUpdate():void {
                 callInterface('event', 'timeupdate', ns.time);
 
-                if(!stopped && ns.time < metaData.duration) {
+                if(!stopped && ns.time < mtDt.duration) {
                     checkProgress();
                 } else  {
                     stopped = true;
@@ -153,7 +153,7 @@ package {
 
         //MetaData
         private function onMetaData(_data:Object):void {
-            metaData = _data;
+            mtDt = _data;
 
             callInterface('event', 'loaded', {
                 'seekable': _data.canSeekToEnd,
