@@ -2,6 +2,7 @@ import eventsList from './events_list';
 import { referrer, object_to_query } from '../../utils/uri';
 import device from '../../utils/device';
 import random from '../../utils/random';
+import { decode_uri } from '../../utils/uri';
 import config from '../../../config';
 
 /**
@@ -26,7 +27,7 @@ class Tracker {
      * @return {Tracker}
      */
     request(uri, macros = {}) {
-        uri = this.__player.macro.uri(uri, macros);
+        uri = this.__player.macro.uri(decode_uri(uri), macros);
 
         if (config.app_tracking) {
             const image = new Image;
