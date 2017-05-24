@@ -118,6 +118,12 @@ class View {
                 .removeClass('nowait', true);
         }
 
+        if (campaign.isInfinity()) {
+            this.wrapper()
+                .style('top', 0)
+                .style('position', 'sticky');
+        }
+
         return this;
     }
 
@@ -215,6 +221,20 @@ class View {
                 .addClass('slided');
 
             return this;
+        }
+
+        if (campaign.isInfinity()) {
+            if (show) {
+                this.container().show();
+
+                this.__player.backfill.hide();
+            } else {
+                this.container().hide();
+
+                this.__player.backfill
+                    .reveal()
+                    .show();
+            }
         }
 
         return this;
