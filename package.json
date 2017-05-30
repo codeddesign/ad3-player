@@ -4,6 +4,7 @@
         "rollup-dev": "npm run rollup-init -- --environment build:dev -w & npm run rollup-player -- --environment build:dev -w",
         "rollup-init": "./node_modules/.bin/rollup -c --input src/init/base.js --output dist/assets/js/init.js",
         "rollup-player": "./node_modules/.bin/rollup -c --input src/player/base.js --output dist/assets/js/player.js",
+        "lzma": "node bin/lzma && ./node_modules/.bin/rollup -c --input src/lzma/base.js --output dist/assets/js/player-c.js",
         "test": "./node_modules/.bin/mocha --compilers js:babel-core/register",
         "test-watch": "npm run test -- --watch",
         "test-all": "./node_modules/.bin/mocha --compilers js:babel-core/register test/**/test*.js",
@@ -15,6 +16,7 @@
         "babel-preset-es2015-rollup": "^1.2.0",
         "chai": "^3.5.0",
         "cssnano": "^3.10.0",
+        "lzma": "^2.3.2",
         "mocha": "^3.1.2",
         "rollup": "^0.36.3",
         "rollup-plugin-babel": "^2.6.1",
@@ -22,6 +24,7 @@
         "rollup-plugin-node-resolve": "^2.0.0",
         "rollup-plugin-postcss": "^0.5.3",
         "rollup-plugin-replace": "^1.1.1",
+        "rollup-plugin-string": "^2.0.2",
         "rollup-plugin-uglify": "^1.0.1",
         "rollup-watch": "^2.5.0"
     },

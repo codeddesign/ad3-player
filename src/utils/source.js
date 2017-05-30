@@ -5,6 +5,10 @@ import { parse_uri } from '../utils/uri';
  */
 class Source {
     constructor(script) {
+        if (!script) {
+            script = { src: '_CSS_CDN_' }; // being replaced by rollup
+        }
+
         const link = parse_uri(script.src),
             matched = link.file_name.match(/\d+/g) || [1];
 

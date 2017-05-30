@@ -6,6 +6,7 @@ import commonjs from 'rollup-plugin-commonjs';
 import uglify from 'rollup-plugin-uglify';
 import postcss from 'rollup-plugin-postcss';
 import cssnano from 'cssnano';
+import string from 'rollup-plugin-string';
 
 /**
  * Env defaults
@@ -25,6 +26,10 @@ const plugins = [
     //     presets: ['es2015-rollup'],
     //     exclude: 'node_modules/**'
     // }),
+
+    string({
+        include: '**/*.txt',
+    }),
 
     babel({
         babelrc: false,
