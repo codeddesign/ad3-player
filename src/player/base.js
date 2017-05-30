@@ -1,3 +1,4 @@
+import '../../dist/assets/css/style.css';
 import $ from '../utils/element';
 import { request_campaign } from './request';
 

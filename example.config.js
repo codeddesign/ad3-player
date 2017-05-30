@@ -5,14 +5,6 @@ export const assets = [{
         src: `http://a3m.dev/player.js`
     },
     must_wait: true
-}, {
-    name: 'styling',
-    tag: 'link',
-    attributes: {
-        rel: 'stylesheet',
-        href: `https://a3m.dev/style.css`
-    },
-    must_wait: false
 }];
 
 export default {
@@ -87,5 +79,8 @@ export default {
         uri: 'http://a3m.dev/dump/',
         enabled: false,
         tags: []
-    }
+    },
+
+    // key is being used by rollup.config.js and replaces '_CSS_CDN_' in style.css
+    css_cdn: 'http://cdn.a3m.io'
 };

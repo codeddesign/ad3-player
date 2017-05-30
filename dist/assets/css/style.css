@@ -73,11 +73,11 @@ a3m-wrapper a3m-sound {
 }
 
 a3m-wrapper a3m-sound.on {
-    background: url('../images/soundon.png');
+    background: url('_CSS_CDN_/assets/images/soundon.png');
 }
 
 a3m-wrapper a3m-sound.off {
-    background: url('../images/soundoff.png');
+    background: url('_CSS_CDN_/assets/images/soundoff.png');
 }
 
 a3m-wrapper .slide {
@@ -109,7 +109,7 @@ a3m-wrapper a3m-presentedby {
     width: 100%;
     min-height: 20px;
     max-height: 20px;
-    background-image: url('../images/ad3_presentedby.png');
+    background-image: url('_CSS_CDN_/assets/images/ad3_presentedby.png');
     background-repeat: no-repeat;
     background-position: center center;
 }
