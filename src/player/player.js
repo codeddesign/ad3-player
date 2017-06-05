@@ -157,7 +157,7 @@ class Player {
         }
 
         // video: start
-        if (this.view.mustStart() && this.selected() && !this.selected().isStarted()) {
+        if (this.view.mustStart() && this.selected() && !this.selected().gotStarted() && !this.selected().isStarted()) {
             this.selected().video().start();
 
             // Add fallback, because 'started' event normally gets triggered immediately

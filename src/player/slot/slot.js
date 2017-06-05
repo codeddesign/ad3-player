@@ -243,6 +243,13 @@ class Slot {
     /**
      * @return {Boolean}
      */
+    gotStarted() {
+        return this._got_started;
+    }
+
+    /**
+     * @return {Boolean}
+     */
     isStarted() {
         return this._started;
     }
@@ -382,6 +389,11 @@ class Slot {
                 }, this.tag().timeOut());
                 break;
             case 'got-started':
+                // desktop only and when is marked as loaded
+                if (!device.mobile() && this._loaded) {
+                    this._got_started = true;
+                }
+
                 this.addEventTimeout('started', () => {
                     if (!this.media().isVPAID()) {
                         return false;
