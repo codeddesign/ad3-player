@@ -319,16 +319,6 @@ class Slot {
                 this.ad()._used = true;
 
                 this._started = true;
-
-                this.addEventTimeout('videostart', () => {
-                    if (!this.media().isVPAID()) {
-                        return false;
-                    }
-
-                    if (!this.isPlaying()) {
-                        this.videoListener('error', 901);
-                    }
-                }, config.timeout.started * 1000);
                 break;
             case 'videostart':
                 // clear minimum size - sanity fallback
@@ -394,12 +384,12 @@ class Slot {
                     this._got_started = true;
                 }
 
-                this.addEventTimeout('started', () => {
+                this.addEventTimeout('impression', () => {
                     if (!this.media().isVPAID()) {
                         return false;
                     }
 
-                    if (!this.isStarted()) {
+                    if (!this.isPlaying()) {
                         this.videoListener('error', 901);
                     }
                 }, config.timeout.started * 1000);
