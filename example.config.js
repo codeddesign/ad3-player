@@ -48,7 +48,11 @@ export default {
     single_tag_testing: false,
 
     // If false, tags that triggered 'loaded' won't be added to storage
-    caching: false,
+    caching: {
+        enabled: false,
+        vpaid: false,
+        expires: 12, // number of hours
+    },
 
     // Onscroll workflow config
     onscroll: {

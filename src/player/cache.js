@@ -13,7 +13,7 @@ class Cache {
      * @return {Boolean}
      */
     static support() {
-        if (!config.caching) {
+        if (!config.caching.enabled) {
             return false;
         }
 
@@ -23,11 +23,26 @@ class Cache {
     /**
      * @param {Campaign} campaign
      * @param {Tag} tag
+     * @param {Boolean} is_vpaid
      *
      * @return {Boolean}
      */
-    static write(campaign, tag) {
-        if (!this.support() || tag.vast()._fromCache) {
+    static write(campaign, tag, is_vpaid) {
+        if (!this.support()) {
+            // console.warn('Skipping cache write: not enabled/no storage support');
+
+            return false;
+        }
+
+        if (is_vpaid && !config.caching.vpaid) {
+            // console.warn('Skipping cache write: vpaid is not enabled.');
+
+            return false;
+        }
+
+        if (tag.vast()._fromCache) {
+            // console.warn('Skipping cache write: tag it\'s from cache.');
+
             return false;
         }
 
@@ -61,6 +76,17 @@ class Cache {
         for (key in localStorage) {
             const matched = key.match(pattern);
             if (matched && !this._isAllocated(key)) {
+                const [_matched, _campaign_id, _tag_id, timestamp] = matched;
+
+                const hours = (Date.now() - parseInt(timestamp)) / 36e5;
+                if (hours >= config.caching.expires) {
+                    // console.warn('cache expired', key);
+
+                    this.remove(key);
+
+                    continue;
+                }
+
                 try {
                     vast = Builder.toVast(
                         localStorage.getItem(key)

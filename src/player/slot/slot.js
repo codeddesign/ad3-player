@@ -308,14 +308,12 @@ class Slot {
                     this.__player.tracker.video(this, 'filled');
                 }
 
-                Cache.write(this.__player.campaign, this.__tag);
+                Cache.write(this.__player.campaign, this.__tag, this.media().isVPAID());
 
                 this._loaded = true;
 
                 break;
             case 'started':
-                Cache.remove(this.__tag.vast()._cacheKey);
-
                 this.ad()._used = true;
 
                 this._started = true;
@@ -329,13 +327,14 @@ class Slot {
                     this.__player.tracker.video(this, 'filled');
                 }
 
-                Cache.remove(this.__tag.vast()._cacheKey);
-
                 this.ad()._used = true;
 
                 this._playing = true;
 
                 this.show();
+                break;
+            case 'impression':
+                Cache.remove(this.__tag.vast()._cacheKey);
                 break;
             case 'paused':
                 this._paused = true;
@@ -420,6 +419,8 @@ class Slot {
      */
     clearEventTimeout(event) {
         if (this._timeouts[event]) {
+            // console.warn('Cleared event timeout', event);
+
             clearTimeout(this._timeouts[event]);
         }
 

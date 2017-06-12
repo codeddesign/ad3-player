@@ -294,6 +294,8 @@ class Tag {
         return new Promise((resolve, reject) => {
             const { key, vast } = Cache.read(this.__player.campaign, this);
             if (vast) {
+                // console.warn('using tag', this.id(), 'from cache');
+
                 this._validateRequestVast(vast);
 
                 resolve(this);
@@ -395,7 +397,7 @@ class Tag {
 
                     this._notifyPlayer();
                 });
-        }, (this.vast()._fromCache) ? 0 : this.delay());
+        }, (this.vast() && this.vast()._fromCache) ? 0 : this.delay());
 
         return this;
     }
