@@ -231,6 +231,16 @@ class View {
                 this.container().show();
 
                 this.__player.backfill.hide();
+
+                const slot = this.__player.$selected.element(),
+                    size = proportion(slot.size().width);
+
+                this.container().size({
+                    width: size.width,
+                    height: size.height + pb.size().height
+                });
+
+                slot.size(size);
             } else {
                 this.container().hide();
 
