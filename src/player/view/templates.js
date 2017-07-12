@@ -11,11 +11,11 @@ const partial = {
 export const wrapper = (campaign_id) => {
     return `<a3m-wrapper data-campaign="${campaign_id}">
         <a3m-backfill class="none">
-            ${partial.providedby()}
+            ${partial.providedby('hidden')}
             <a3m-placeholder></a3m-placeholder>
         </a3m-backfill>
         <a3m-container>
-            ${partial.providedby('video')}
+            ${partial.providedby('video hidden')}
             <a3m-slot class="video none"></a3m-slot>
             <a3m-sound class="hidden off"></a3m-sound>
         </a3m-container>

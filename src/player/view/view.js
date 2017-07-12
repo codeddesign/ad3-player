@@ -157,7 +157,10 @@ class View {
      * @return {View}
      */
     transition(show = true) {
-        const campaign = this.__player.campaign;
+        const campaign = this.__player.campaign,
+            pb = this.presentedby();
+
+        (show) ? pb.show(): pb.hide();
 
         if (campaign.isOnscroll() && this.__onscrollBasic()) {
             if (show) {
