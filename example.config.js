@@ -86,5 +86,8 @@ export default {
     },
 
     // key is being used by rollup.config.js and replaces '_CSS_CDN_' in style.css
-    css_cdn: 'http://cdn.a3m.io'
+    css_cdn: 'http://cdn.a3m.io',
+
+    // Default proportion for tag request
+    proportion: 9 / 16
 };
