@@ -7,6 +7,7 @@ import Cache from '../cache';
 import config from '../../../config';
 import device from '../../utils/device';
 import ajax from '../../utils/ajax';
+import proportion from '../../utils/proportion';
 
 class Slot {
     constructor(player, tag) {
@@ -66,6 +67,27 @@ class Slot {
      */
     element() {
         return this.$element;
+    }
+
+    /**
+     * @return {Boolean|Float}
+     */
+    proportion() {
+        const width = this.media().width(),
+            height = this.media().height();
+
+        if (!width || !height) {
+            return false;
+        }
+
+        return height / width;
+    }
+
+    /**
+     * @return {Object}
+     */
+    size() {
+        return proportion(this.__player.size.width, this.proportion())
     }
 
     /**
@@ -141,8 +163,7 @@ class Slot {
 
             this.$element = this.__player.view.container().append('a3m-slot', attributes);
 
-            // size
-            this._setMinimumSize(this.__player.size);
+            this.$element.size(this.size());
 
             this.hide();
 
@@ -166,14 +187,6 @@ class Slot {
         return this;
     }
 
-    _setMinimumSize(_size = { width: null, height: null }) {
-        this.element()
-            .style('minWidth', _size.width, true)
-            .style('minHeight', _size.height, true);
-
-        return this;
-    }
-
     /**
      * Helper method.
      *
@@ -181,7 +194,7 @@ class Slot {
      */
     hide() {
         if (this.exists()) {
-            this.element().hide();
+            this.element().addClass('none');
         }
 
         return this;
@@ -194,7 +207,7 @@ class Slot {
      */
     show() {
         if (this.exists()) {
-            this.element().show();
+            this.element().removeClass('none');
         }
 
         return this;
@@ -300,9 +313,6 @@ class Slot {
 
         switch (event) {
             case 'loaded':
-                // clear minimum size
-                this._setMinimumSize();
-
                 // tracking: filled event for NON-VPAID
                 if (!this.media().isVPAID()) {
                     this.__player.tracker.video(this, 'filled');
@@ -319,9 +329,6 @@ class Slot {
                 this._started = true;
                 break;
             case 'videostart':
-                // clear minimum size - sanity fallback
-                this._setMinimumSize();
-
                 // tracking: filled event for VPAID
                 if (this.media().isVPAID()) {
                     this.__player.tracker.video(this, 'filled');

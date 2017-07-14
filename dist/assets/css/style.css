@@ -1,59 +1,22 @@
 a3m-wrapper {
     all: revert;
+    background: #fff;
 }
 
-a3m-wrapper, a3m-container, a3m-slot {
+a3m-wrapper, a3m-container, a3m-slot, a3m-fixable, a3m-backfill {
+    display: -webkit-box;
+    display: -ms-flexbox;
     display: flex;
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+    -ms-flex-direction: column;
     flex-direction: column;
-    width: 100%;
-    max-width: 640px;
     margin: 0 auto;
-    align-items: center;
-}
-
-a3m-wrapper .hidden {
-    visibility: hidden;
-}
-
-a3m-wrapper a3m-slot {
-    z-index: 1;
-    position: absolute;
-    left: 0;
-    /* height of the presented by */
-    top: 20px;
-}
-
-a3m-wrapper a3m-slot.hidden {
-    z-index: 0;
-}
-
-a3m-wrapper a3m-slot.hidden > * {
-    height: 0 !important;
-}
-
-a3m-wrapper .none {
-    display: none;
-}
-
-a3m-wrapper .nowait {
-    transition: none !important;
-}
-
-a3m-wrapper a3m-container {
-    top: initial;
-    right: initial;
-    bottom: initial;
-    left: initial;
-}
-
-a3m-wrapper a3m-container:not(.fixed-custom) {
-    position: relative;
+    width: 100%;
     height: auto;
-}
-
-a3m-container.fixed-custom {
-    position: fixed;
-    z-index: 999999999;
+    max-width: 640px;
+    max-height: 1500px;
+    overflow: hidden;
 }
 
 a3m-wrapper a3m-slot video::-webkit-media-controls-play-button, a3m-wrapper a3m-slot video::-webkit-media-controls-start-playback-button {
@@ -62,7 +25,32 @@ a3m-wrapper a3m-slot video::-webkit-media-controls-play-button, a3m-wrapper a3m-
     width: 5px;
 }
 
+a3m-wrapper a3m-container {
+    position: relative;
+    background: #000;
+}
+
+a3m-wrapper a3m-fixable.customfixed {
+    position: fixed;
+    width: initial;
+}
+
+a3m-wrapper a3m-presentedby {
+    background: #fff;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    width: 100%;
+    min-height: 20px;
+    max-height: 20px;
+    background-image: url('_CSS_CDN_/assets/images/ad3_presentedby.png');
+    background-repeat: no-repeat;
+    background-position: center center;
+}
+
 a3m-wrapper a3m-sound {
+    display: -webkit-box;
+    display: -ms-flexbox;
     display: flex;
     z-index: 999;
     width: 20px;
@@ -80,40 +68,34 @@ a3m-wrapper a3m-sound.off {
     background: url('_CSS_CDN_/assets/images/soundoff.png');
 }
 
-a3m-wrapper .slide {
-    /* 360px + presentedby */
-    max-height: 380px;
-    transition: max-height .8s;
-    -moz-transition: max-height .8s ease-in-out;
-    -ms-transition: max-height .8s ease-in-out;
-    -o-transition: max-height .8s ease-in-out;
-    -webkit-transition: max-height .8s ease-in-out;
+a3m-wrapper .none {
+    display: none;
 }
 
-a3m-wrapper .slide:not(.hasiframe) {
-    overflow: hidden;
+a3m-wrapper a3m-slot.none {
+    display: flex;
+    background: transparent !important;
+    opacity: 0;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    pointer-events: none;
+}
+
+a3m-wrapper .hidden {
+    visibility: hidden;
+}
+
+a3m-wrapper .slide {
+    -webkit-transition: .5s linear margin-top;
+    -o-transition: .5s linear margin-top;
+    transition: .5s linear margin-top;
+    margin-top: 0;
+    width: 100%;
+    height: auto;
 }
 
 a3m-wrapper .slide.slided {
-    max-height: 0 !important;
-}
-
-a3m-wrapper a3m-backfill {
-    display: flex;
-    width: 100%;
-    flex-direction: column;
-}
-
-a3m-wrapper a3m-presentedby {
-    display: block;
-    width: 100%;
-    min-height: 20px;
-    max-height: 20px;
-    background-image: url('_CSS_CDN_/assets/images/ad3_presentedby.png');
-    background-repeat: no-repeat;
-    background-position: center center;
-}
-
-a3m-wrapper a3m-container > a, a3m-wrapper a3m-backfill > a {
-    width: 100%;
+    /* [16:9]=380px < [4:3] = 500px */
+    margin-top: -500px;
 }

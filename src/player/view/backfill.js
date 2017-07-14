@@ -104,7 +104,10 @@ class Backfill {
 
         this.$revealed = true;
 
-        // transition
+        // first: show
+        this.show();
+
+        // second: transition
         this.container()
             .removeClass('slided');
 
@@ -169,6 +172,7 @@ class Backfill {
         // add element to dom
         _iDocument.__add(_embed);
 
+        let currentHeight = 0;
         watchIframeSize(_iDocument, _iframe.node, (size) => {
             let _height = size.height;
 
@@ -179,6 +183,15 @@ class Backfill {
 
             this.container()
                 .style('maxHeight', _height, true);
+
+            // reverse setup's show()
+            if (currentHeight == 0 && _height > 0) {
+                currentHeight = _height;
+
+                if (!this.revealed()) {
+                    this.hide();
+                }
+            }
         });
     }
 

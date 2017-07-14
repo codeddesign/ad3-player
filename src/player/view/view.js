@@ -17,7 +17,7 @@ class View {
             wrapper(source.id)
         );
 
-        ['backfill', 'container', 'slot.video', 'sound', 'presentedby.video'].forEach((name) => {
+        ['backfill', 'fixable', 'container', 'slot.video', 'sound', 'presentedby.video'].forEach((name) => {
             const selector = `a3m-${name}`;
 
             this.$els[name] = this.wrapper().find(selector);
@@ -61,6 +61,10 @@ class View {
      */
     backfill() {
         return this.get('backfill');
+    }
+
+    fixable() {
+        return this.get('fixable');
     }
 
     /**
@@ -114,8 +118,9 @@ class View {
 
         if (campaign.isOnscroll()) {
             this.container()
-                .addClass('nowait slide slided')
-                .removeClass('nowait', true);
+                .addClass('none nowait')
+                .addClass('slide slided')
+                .removeClass('none nowait', true);
         }
 
         if (campaign.isInfinity()) {
@@ -160,15 +165,11 @@ class View {
         const campaign = this.__player.campaign,
             pb = this.presentedby();
 
-        (show) ? pb.show(): pb.hide();
-
         if (campaign.isOnscroll() && this.__onscrollBasic()) {
             if (show) {
                 if (this.__player.backfill.revealed()) {
                     this.__player.backfill.hide();
                 }
-
-                this.container().size(this.__playerSize());
 
                 this.container().removeClass('slided');
 
@@ -200,6 +201,9 @@ class View {
 
         if (campaign.isOnscroll() && this.__onscrollAside()) {
             if (show) {
+                // sanity call: add/remove custom position
+                this.mustStart();
+
                 this.container().removeClass('slided');
 
                 return this;
@@ -212,9 +216,7 @@ class View {
                     this.__player.backfill.reveal();
                 }
 
-                this.container().size(this.__playerSize());
-
-                if (this.container().hasClass('fixed-custom')) {
+                if (this.container().hasClass('customfixed')) {
                     this.container()
                         .attrRemove('style');
                 }
@@ -265,11 +267,12 @@ class View {
     resize(size) {
         size = size || this.__player.size;
 
-        try {
-            // width and height only
-            size = { width: size.width, height: size.height };
+        const width = size.width;
 
+        try {
             const _selected = this.__player.$selected;
+
+            size = proportion(width, _selected.proportion());
 
             // video
             _selected.video().resize(
@@ -379,29 +382,36 @@ class View {
         });
 
         // wrapper: keep size
-        if (!this.__player.backfill.revealed() && this.__player.$selected && this.__player.$selected.isPlaying()) {
-            this.wrapper().style('height', this.__playerSize().height, true);
+        if (
+            this.__player.$selected &&
+            this.__player.$selected.isPlaying() &&
+            !this.__player.backfill.revealed() &&
+            !this.wrapper().attr('style')
+        ) {
+            this.wrapper().style('height', this.__player.$selected.size().height + this.presentedby().size().height, true);
         }
 
         // container: add custom style
         Object.keys(style).forEach((key) => {
             const value = style[key];
 
-            this.container().style(key, value, true);
+            this.fixable().style(key, value, true);
 
             if (key == 'width') {
                 // height: keep proportions; ignore given height if any
-                style.height = proportion(value).height;
+                style.height = proportion(value, this.__player.$selected.proportion()).height;
 
-                this.container().style('height', style.height + this.presentedby().size().height, true);
+                this.fixable().style('height', style.height + this.presentedby().size().height, true);
             }
         });
 
         // container: add custom fixed class
-        this.container().addClass('fixed-custom');
+        this.fixable().addClass('customfixed');
 
         // video: resize
-        this.resize(style);
+        if (this.__player.$selected.isPlaying()) {
+            this.resize(style);
+        }
 
         return this;
     }
@@ -415,13 +425,17 @@ class View {
         }
 
         // container: remove custom fixed class, style, set new size
-        this.container()
-            .removeClass('fixed-custom')
-            .attrRemove('style')
-            .size(this.__playerSize());
+        this.fixable()
+            .removeClass('customfixed')
+            .attrRemove('style');
 
         // video: resize to initial size
-        this.resize();
+        if (this.__player.$selected.isPlaying()) {
+            this.resize();
+        }
+
+        // wrapper: remove height as final action
+        this.wrapper().attrRemove('style');
 
         return this;
     }
