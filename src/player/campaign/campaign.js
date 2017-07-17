@@ -139,7 +139,8 @@ class Campaign {
      */
     separateTags() {
         const nonguaranteed = [],
-            guaranteed = [];
+            guaranteed = [],
+            loadable = [];
 
         if (!(this.$tags instanceof Array)) {
             const tags = [];
@@ -153,6 +154,14 @@ class Campaign {
         this.$tags.forEach((tag, index) => {
             tag = new Tag(this.__player, tag);
 
+            if (!tag.canBeLoaded()) {
+                delete this.$tags[index];
+
+                return false;
+            }
+
+            loadable.push(tag);
+
             if (tag.isGuaranteed()) {
                 guaranteed.push(tag);
 
@@ -162,6 +171,7 @@ class Campaign {
             nonguaranteed.push(tag);
         });
 
+        this.$tags = loadable;
         this.$nonguaranteed = nonguaranteed;
         this.$guaranteed = guaranteed;
 
@@ -204,11 +214,9 @@ class Campaign {
             const tags = [];
 
             this.tags().forEach((tag) => {
-                if (tag.canBeLoaded()) {
-                    tag.request();
+                tag.request();
 
-                    tags.push(tag);
-                }
+                tags.push(tag);
             });
 
             resolve(tags);
