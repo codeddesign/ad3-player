@@ -177,6 +177,10 @@ class Player {
 
             // Note: order of conditions matters
             if (this.view.mustResume() && this.selected() && this.selected().isPaused()) {
+                if (device.igadget() && !device.iphoneInline() && this.selected().media().isVPAID()) {
+                    return this;
+                }
+
                 this.selected().video().resume();
 
                 return this;
