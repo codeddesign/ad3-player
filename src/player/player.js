@@ -40,8 +40,26 @@ class Player {
 
         this.$selected = false;
 
+        (this.tags || []).forEach((tag) => {
+            tag.slots().forEach((slot) => {
+                if (this.$selected || !slot.isLoaded()) {
+                    return false;
+                }
+
+                if (!slot.ad()._used && !slot.media().isVPAID()) {
+                    this.$selected = slot;
+
+                    slot.mark('got-selected');
+                }
+            })
+        });
+
         (this.tags || []).some((tag) => {
             return tag.slots().some((slot) => {
+                if (this.$selected || !slot.isLoaded()) {
+                    return false;
+                }
+
                 if (!slot.ad()._used) {
                     this.$selected = slot;
 
@@ -91,25 +109,34 @@ class Player {
 
         this.tracker.video(slot, name, data);
 
+        const view_control = (!this.$selected || this.$selected == slot);
+
         switch (name) {
             case 'loaded':
                 this.play();
                 break;
             case 'started':
-                slot.video().volume(
-                    this.campaign.startsWithSound()
-                );
+                if (view_control) {
+                    slot.video().volume(
+                        this.campaign.startsWithSound()
+                    );
+                }
                 break;
             case 'videostart':
-                this.view.soundControl();
-
-                this.view.transition();
+                if (view_control) {
+                    this.view.soundControl();
+                    this.view.transition();
+                }
                 break;
             case 'skipped':
             case 'stopped':
             case 'complete':
             case 'error':
-                this.view.soundControl(true);
+                if (view_control) {
+                    this.view.soundControl(true);
+
+                    this.view.transition(false);
+                }
 
                 this.play();
                 break;
@@ -129,7 +156,7 @@ class Player {
             this.view.transition(false);
         }
 
-        if (!this.tags || !this.selected() || !this.selected().isLoaded()) {
+        if (!this.tags || !this.selected()) {
             return this;
         }
 
