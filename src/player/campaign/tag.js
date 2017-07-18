@@ -211,11 +211,12 @@ class Tag {
     finished() {
         let finished = true;
 
-        if (!this.vast()) {
-            return finished;
+        let ads = [];
+        if (this.vast()) {
+            ads = this.vast().ads();
         }
 
-        this.vast().ads().forEach((ad) => {
+        ads.forEach((ad) => {
             if (!ad._used) {
                 finished = false;
             }
@@ -382,7 +383,7 @@ class Tag {
      * @return {Tag}
      */
     _schedule(s) {
-        if (this.$scheduled || this.$firstRequest) {
+        if (this.$scheduled || this.$firstRequest || !this.finished()) {
             return this;
         }
 
