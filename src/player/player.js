@@ -46,30 +46,33 @@ class Player {
                     return false;
                 }
 
+                // html5 priority
                 if (!slot.ad()._used && !slot.media().isVPAID()) {
                     this.$selected = slot;
 
                     slot.mark('got-selected');
-                }
-            })
-        });
 
-        (this.tags || []).some((tag) => {
-            return tag.slots().some((slot) => {
-                if (this.$selected || !slot.isLoaded()) {
                     return false;
                 }
 
+                // temporary vpaid with actual fill
+                if (slot._paused && slot.ad()._temporary_vpaid) {
+                    this.$selected = slot;
+
+                    slot.mark('got-selected');
+
+                    return false;
+                }
+
+                // fallback to unused vpaid
                 if (!slot.ad()._used) {
                     this.$selected = slot;
 
                     slot.mark('got-selected');
 
-                    return true;
+                    return false;
                 }
-
-                return false;
-            });
+            })
         });
 
         return this.$selected;
@@ -122,6 +125,7 @@ class Player {
                     );
                 }
                 break;
+            case '_temporary_vpaid':
             case 'videostart':
                 if (view_control) {
                     this.view.soundControl();

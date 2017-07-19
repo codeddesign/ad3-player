@@ -228,7 +228,7 @@ class Tag {
         }
 
         ads.forEach((ad) => {
-            if (!ad._used) {
+            if (!ad._used || ad._temporary_vpaid) {
                 finished = false;
             }
         });

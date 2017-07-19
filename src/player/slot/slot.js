@@ -322,6 +322,13 @@ class Slot {
 
                 this._loaded = true;
 
+                if (this.media().isVPAID() && (!device.igadget() || device.iphoneInline())) {
+                    // console.warn('started temporary', this.tag().id());
+
+                    this.ad()._temporary_vpaid = true;
+
+                    this.video().start();
+                }
                 break;
             case 'started':
                 this.ad()._used = true;
@@ -338,7 +345,14 @@ class Slot {
 
                 this._playing = true;
 
-                this.show();
+                if (!this.ad()._temporary_vpaid) {
+                    // halted show
+                    this.show();
+                } else {
+                    // console.warn('paused temporary', this.tag().id());
+
+                    this.video().pause();
+                }
                 break;
             case 'impression':
                 Cache.remove(this.__tag.vast()._cacheKey);
@@ -371,7 +385,20 @@ class Slot {
                 this.tag()._schedule();
                 break;
             case 'got-selected':
-                // console.log('selected:', this);
+                // console.warn('selected:', this);
+
+                if (this.ad()._temporary_vpaid) {
+                    // console.warn('selected temporary', this.tag().id());
+
+                    this.ad()._temporary_vpaid = false;
+
+                    // sanity calls:
+                    if (this._paused) {
+                        this.show(); // halted in 'videostart'
+
+                        this.__player.slotListener(this, '_temporary_vpaid'); // custom event name for player's view-control
+                    }
+                }
                 break;
             case 'got-created':
                 this.addEventTimeout('loaded', () => {
