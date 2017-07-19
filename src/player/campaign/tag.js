@@ -30,6 +30,8 @@ class Tag {
         this.$firstRequest = true;
 
         this.$scheduled = false;
+
+        this.$parallel = {};
     }
 
     /**
@@ -75,6 +77,15 @@ class Tag {
      * @return {Integer}
      */
     delay() {
+        if (this.vast() && this.vast()._fromCache) {
+            return 0;
+        }
+
+        const { key, vast } = this.parallelRequestVast();
+        if (vast) {
+            return 0;
+        }
+
         let delay_time = this.$delay_time;
 
         if (this.__player.campaign.isInfinity() && this.$infinity_delay_time) {
@@ -283,6 +294,37 @@ class Tag {
     }
 
     /**
+     * @return {Boolean|String}
+     */
+    parallelRequestKey() {
+        let with_key = false;
+        Object.keys(this.$parallel).forEach((key) => {
+            if (this.$parallel[key] === true) {
+                with_key = key;
+            }
+        });
+
+        return with_key;
+    }
+
+    /**
+     * @return {Object}
+     */
+    parallelRequestVast() {
+        let key = false,
+            vast = false;
+
+        Object.keys(this.$parallel).forEach((_key) => {
+            if (this.$parallel[_key] instanceof Object) {
+                vast = this.$parallel[_key];
+                key = _key;
+            }
+        });
+
+        return { key, vast };
+    }
+
+    /**
      * Makes a request to given tag.
      *
      * @return {Promise}
@@ -293,7 +335,7 @@ class Tag {
         this.$attempts++;
 
         return new Promise((resolve, reject) => {
-            const { key, vast } = Cache.read(this.__player.campaign, this);
+            var { key, vast } = Cache.read(this.__player.campaign, this);
             if (vast) {
                 // console.warn('using tag', this.id(), 'from cache');
 
@@ -303,6 +345,21 @@ class Tag {
 
                 return false;
             }
+
+            var { key, vast } = this.parallelRequestVast();
+            if (vast) {
+                // console.warn('using tag', this.id(), 'from parallel key:', key);
+
+                this._validateRequestVast(vast);
+
+                delete this.$parallel[key];
+
+                resolve(this);
+
+                return false;
+            }
+
+            // console.warn('requesting..')
 
             request_tag(this.__player, this.uri(), this)
                 .then((vast) => {
@@ -338,6 +395,13 @@ class Tag {
         this.$scheduled = false;
 
         try {
+            const key = this.parallelRequestKey();
+            if (key) {
+                this.$parallel[key] = vast;
+
+                return this;
+            }
+
             this.$vast = vast;
 
             if (!this.vast()) {
@@ -380,11 +444,17 @@ class Tag {
      * Notifies player when a tag gets loaded and
      * also has ads using player.tagListener()
      *
+     * @param {String} parallel_key
+     *
      * @return {Tag}
      */
-    _schedule(s) {
+    _schedule(parallel_key) {
         if (this.$scheduled || this.$firstRequest || !this.finished()) {
             return this;
+        }
+
+        if (parallel_key) {
+            this.$parallel[parallel_key] = true;
         }
 
         this.$scheduled = true;
@@ -398,7 +468,7 @@ class Tag {
 
                     this._notifyPlayer();
                 });
-        }, (this.vast() && this.vast()._fromCache) ? 0 : this.delay());
+        }, this.delay());
 
         return this;
     }

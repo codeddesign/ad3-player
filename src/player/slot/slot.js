@@ -343,6 +343,10 @@ class Slot {
             case 'impression':
                 Cache.remove(this.__tag.vast()._cacheKey);
                 break;
+            case 'videofirstquartile':
+                // tag schedule: parallel using event name as key
+                this.tag()._schedule(event);
+                break;
             case 'paused':
                 this._paused = true;
                 break;
@@ -363,7 +367,7 @@ class Slot {
 
                 this.destroy();
 
-                // tag schedule (Note: single exception when _schedule() it's called from outside Tag)
+                // tag schedule: normal
                 this.tag()._schedule();
                 break;
             case 'got-selected':
