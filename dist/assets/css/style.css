@@ -33,6 +33,7 @@ a3m-wrapper a3m-container {
 a3m-wrapper a3m-fixable.customfixed {
     position: fixed;
     width: initial;
+    z-index: 9999;
 }
 
 a3m-wrapper a3m-presentedby {
