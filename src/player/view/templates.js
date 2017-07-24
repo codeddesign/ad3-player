@@ -3,7 +3,7 @@ import config from '../../../config';
 const partial = {
     providedby: (_class = '') => {
         return `<a href="${config.app_path}" target="_blank" title="Presented by ${config.app_path}">
-        <a3m-presentedby class="${_class}"></a3m-presentedby>
+        <a3m-presentedby class="${_class}">Presented by <span>&Lambda;D <sup>&#179;</sup></span></a3m-presentedby>
         </a>`;
     }
 };

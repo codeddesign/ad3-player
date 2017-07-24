@@ -36,6 +36,10 @@ a3m-wrapper a3m-fixable.customfixed {
     z-index: 9999;
 }
 
+a3m-wrapper a {
+    text-decoration: none !important;
+}
+
 a3m-wrapper a3m-presentedby {
     background: #fff;
     display: -webkit-box;
@@ -44,9 +48,26 @@ a3m-wrapper a3m-presentedby {
     width: 100%;
     min-height: 20px;
     max-height: 20px;
-    background-image: url('_CSS_CDN_/assets/images/ad3_presentedby.png');
-    background-repeat: no-repeat;
-    background-position: center center;
+    color: #AAA;
+    font-family: verdana,sans-serif;
+    letter-spacing: -.7px;
+    display: inline-flex;
+    justify-content: center;
+    font-size: 12px;
+    line-height: 2;
+}
+
+a3m-wrapper a3m-presentedby span {
+    color: #000 !important;
+    letter-spacing: -.3px !important;
+    line-height: 1.2 !important;
+    margin-left: 3px !important;
+}
+
+a3m-wrapper a3m-presentedby span > sup {
+    font-size: inherit;
+    color: #615e8f !important;
+    margin-left: -3px !important;
 }
 
 a3m-wrapper a3m-sound {
