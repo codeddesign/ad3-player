@@ -40,36 +40,6 @@ a3m-wrapper a {
     text-decoration: none !important;
 }
 
-a3m-wrapper a3m-presentedby {
-    background: #fff;
-    display: -webkit-box;
-    display: -ms-flexbox;
-    display: flex;
-    width: 100%;
-    min-height: 20px;
-    max-height: 20px;
-    color: #AAA;
-    font-family: verdana,sans-serif;
-    letter-spacing: -.7px;
-    display: inline-flex;
-    justify-content: center;
-    font-size: 12px;
-    line-height: 2;
-}
-
-a3m-wrapper a3m-presentedby span {
-    color: #000 !important;
-    letter-spacing: -.3px !important;
-    line-height: 1.2 !important;
-    margin-left: 3px !important;
-}
-
-a3m-wrapper a3m-presentedby span > sup {
-    font-size: inherit;
-    color: #615e8f !important;
-    margin-left: -3px !important;
-}
-
 a3m-wrapper a3m-sound {
     display: -webkit-box;
     display: -ms-flexbox;
@@ -118,6 +88,6 @@ a3m-wrapper .slide {
 }
 
 a3m-wrapper .slide.slided {
-    /* [16:9]=380px < [4:3] = 500px */
-    margin-top: -500px;
+    /* [16:9]=360px < [4:3] = 480px */
+    margin-top: -480px;
 }

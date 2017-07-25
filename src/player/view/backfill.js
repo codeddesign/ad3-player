@@ -176,11 +176,6 @@ class Backfill {
         watchIframeSize(_iDocument, _iframe.node, (size) => {
             let _height = size.height;
 
-            // assuming it has some content and add extra height
-            if (_height >= 200) {
-                _height += this.__player.view.presentedby().size().height;
-            }
-
             this.container()
                 .style('maxHeight', _height, true);
 

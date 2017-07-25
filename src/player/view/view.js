@@ -17,7 +17,7 @@ class View {
             wrapper(source.id)
         );
 
-        ['backfill', 'fixable', 'container', 'slot.video', 'sound', 'presentedby.video'].forEach((name) => {
+        ['backfill', 'fixable', 'container', 'slot.video', 'sound'].forEach((name) => {
             const selector = `a3m-${name}`;
 
             this.$els[name] = this.wrapper().find(selector);
@@ -44,7 +44,7 @@ class View {
     saveSize() {
         this.__player.size = proportion(this.wrapper().size().width);
 
-        this.wrapper().sizeAsData(this.__playerSize());
+        this.wrapper().sizeAsData(this.__player.size);
 
         return this;
     }
@@ -86,13 +86,6 @@ class View {
      */
     sound() {
         return this.get('sound');
-    }
-
-    /**
-     * @return {Element}
-     */
-    presentedby() {
-        return this.get('presentedby.video');
     }
 
     /**
@@ -162,8 +155,7 @@ class View {
      * @return {View}
      */
     transition(show = true) {
-        const campaign = this.__player.campaign,
-            pb = this.presentedby();
+        const campaign = this.__player.campaign;
 
         if (campaign.isOnscroll() && this.__onscrollBasic()) {
             if (show) {
@@ -239,7 +231,7 @@ class View {
 
                 this.container().size({
                     width: size.width,
-                    height: size.height + pb.size().height
+                    height: size.height
                 });
 
                 slot.size(size);
@@ -388,7 +380,7 @@ class View {
             !this.__player.backfill.revealed() &&
             !this.wrapper().attr('style')
         ) {
-            this.wrapper().style('height', this.__player.$selected.size().height + this.presentedby().size().height, true);
+            this.wrapper().style('height', this.__player.$selected.size().height, true);
         }
 
         // container: add custom style
@@ -401,7 +393,7 @@ class View {
                 // height: keep proportions; ignore given height if any
                 style.height = proportion(value, this.__player.$selected.proportion()).height;
 
-                this.fixable().style('height', style.height + this.presentedby().size().height, true);
+                this.fixable().style('height', style.height, true);
             }
         });
 
@@ -438,27 +430,6 @@ class View {
         this.wrapper().attrRemove('style');
 
         return this;
-    }
-
-    /**
-     * Helper method.
-     *
-     * @param {bool} withPresentedBy
-     *
-     * @return {Object}
-     */
-    __playerSize(withPresentedBy = true) {
-        let width = this.__player.size.width,
-            height = this.__player.size.height;
-
-        if (withPresentedBy) {
-            height += this.presentedby().size().height;
-        }
-
-        return {
-            width,
-            height
-        };
     }
 
     /**
