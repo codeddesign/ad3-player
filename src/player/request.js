@@ -22,9 +22,11 @@ export const request_campaign = (source) => {
         .then((response) => {
             const __player = new Player(response.text, source);
 
-            __player.tracker
-                .visit()
-                .campaign(response.status);
+            setTimeout(() => {
+                __player.tracker.visit();
+            }, config.timeout.visit_minimum * 1000);
+
+            __player.tracker.campaign(response.status);
         })
         .catch((e) => {
             console.error(e);

@@ -18,7 +18,8 @@ export default {
     // Timeouts in seconds
     timeout: {
         ajax: 3.0,
-        started: 5.0
+        started: 5.0,
+        visit_minimum: 15.0
     },
 
     // Campaign setup

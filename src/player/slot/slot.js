@@ -355,6 +355,8 @@ class Slot {
                 }
                 break;
             case 'impression':
+                this.__player.tracker.visit();
+
                 Cache.remove(this.__tag.vast()._cacheKey);
                 break;
             case 'videofirstquartile':
