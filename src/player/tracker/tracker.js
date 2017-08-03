@@ -2,6 +2,7 @@ import eventsList from './events_list';
 import { referrer, object_to_query } from '../../utils/uri';
 import device from '../../utils/device';
 import random from '../../utils/random';
+import { randomString } from '../../utils/random';
 import { decode_uri } from '../../utils/uri';
 import config from '../../../config';
 
@@ -13,9 +14,21 @@ import config from '../../../config';
  */
 const VISIT_KEY_NAME = '__a3m_visit';
 
+/**
+ * Name of the window variable that holds
+ * an unique identifier for visit
+ *
+ * @type {string}
+ */
+const VISIT_UNIQUE_ID = '__a3m__vuid';
+
 class Tracker {
     constructor(player) {
         this.__player = player;
+
+        if (!window[VISIT_UNIQUE_ID]) {
+            this.vuid = randomString();
+        }
     }
 
     /**
@@ -58,7 +71,8 @@ class Tracker {
             campaign: this.__player.campaign.id(),
             referrer: referrer.simple,
             platform: device.mobile() ? 'mobile' : 'desktop',
-            _rd: random()
+            _rd: random(),
+            vuid: this.vuid
         }, info);
 
         if (addExtra) {
