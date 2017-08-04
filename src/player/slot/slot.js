@@ -314,7 +314,8 @@ class Slot {
         switch (event) {
             case 'loaded':
                 // tracking: filled event for NON-VPAID
-                if (!this.media().isVPAID()) {
+                if (!this.ad()._filled && !this.media().isVPAID()) {
+                    this.ad()._filled = true;
                     this.__player.tracker.video(this, 'filled');
                 }
 
@@ -337,7 +338,8 @@ class Slot {
                 break;
             case 'videostart':
                 // tracking: filled event for VPAID
-                if (this.media().isVPAID()) {
+                if (!this.ad()._filled && this.media().isVPAID()) {
+                    this.ad()._filled = true;
                     this.__player.tracker.video(this, 'filled');
                 }
 
@@ -356,6 +358,13 @@ class Slot {
                 break;
             case 'impression':
                 this.__player.tracker.visit();
+
+                // tracking: filled event (sanity call)
+                if (!this.ad()._filled) {
+                    this.ad()._filled = true;
+
+                    this.__player.tracker.video(this, 'filled');
+                }
 
                 Cache.remove(this.__tag.vast()._cacheKey);
                 break;
