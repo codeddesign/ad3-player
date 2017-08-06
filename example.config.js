@@ -90,5 +90,10 @@ export default {
     css_cdn: 'http://cdn.a3m.io',
 
     // Default proportion for tag request
-    proportion: 9 / 16
+    proportion: 9 / 16,
+
+    // Custom limits
+    limit: {
+        max_requests: 5
+    }
 };

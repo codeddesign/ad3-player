@@ -332,11 +332,18 @@ class Tag {
     request() {
         this._reset();
 
+        if (config.limit.max_requests && config.limit.max_requests < this.attempts()) {
+            return false;
+        }
+
         this.$attempts++;
 
         return new Promise((resolve, reject) => {
             var { key, vast } = Cache.read(this.__player.campaign, this);
             if (vast) {
+                // don't count cached attempts
+                this.$attempts--;
+
                 // console.warn('using tag', this.id(), 'from cache');
 
                 this._validateRequestVast(vast);
@@ -460,14 +467,16 @@ class Tag {
         this.$scheduled = true;
 
         setTimeout(() => {
-            this.request()
-                .then(() => {
+            const promise = this.request();
+            if (promise) {
+                promise.then(() => {
                     if (this.failed()) {
                         return false;
                     }
 
                     this._notifyPlayer();
                 });
+            }
         }, this.delay());
 
         return this;
