@@ -354,7 +354,7 @@ class View {
 
         const $script = this.$source.script,
             mode = device.mobile() ? 'mobile' : 'desktop',
-            styling = $script.attr(`styling-${mode}`) || $script.attr('styling') || 'left: 10, bottom: 10, width: 320',
+            styling = $script.attr(`styling-${mode}`) || $script.attr('styling') || 'left: 10, bottom: 10, width: 400',
             style = {
                 width: this.__player.size.width
             };
@@ -372,6 +372,11 @@ class View {
                 style[key.trim()] = parseInt(value.trim());
             }
         });
+
+        // don't allow the width to be less than 400
+        if (style.width < 400) {
+            style.width = 400;
+        }
 
         // wrapper: keep size
         if (
