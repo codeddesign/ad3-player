@@ -127,6 +127,7 @@ class Player {
                 break;
             case '_temporary_vpaid':
             case 'videostart':
+            case 'impression':
                 if (view_control) {
                     this.view.soundControl();
                     this.view.transition();

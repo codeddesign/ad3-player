@@ -196,6 +196,8 @@ class View {
                 // sanity call: add/remove custom position
                 this.mustStart();
 
+                this.__player.$selected.show();
+
                 this.container().removeClass('slided');
 
                 return this;

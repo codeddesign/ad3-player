@@ -359,6 +359,9 @@ class Slot {
             case 'impression':
                 this.__player.tracker.visit();
 
+                // sanity set
+                this._playing = true;
+
                 // tracking: filled event (sanity call)
                 if (!this.ad()._filled) {
                     this.ad()._filled = true;
