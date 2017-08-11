@@ -10,6 +10,7 @@ export const wrapper = (campaign_id) => {
                 <a3m-slot class="video none"></a3m-slot>
                 <a3m-sound class="hidden off"></a3m-sound>
             </a3m-container>
+            <a3m-target><a3m-target-text>Learn more</a3m-target-text><a3m-target-arrow></a3m-target-arrow></a3m-target>
         </a3m-fixable>
     </a3m-wrapper>`
 };

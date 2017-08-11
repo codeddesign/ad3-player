@@ -21,6 +21,7 @@ a3m-wrapper, a3m-container, a3m-slot, a3m-fixable, a3m-backfill {
 
 a3m-wrapper a3m-slot video::-webkit-media-controls-play-button, a3m-wrapper a3m-slot video::-webkit-media-controls-start-playback-button {
     opacity: 0;
+    -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=0)";
     pointer-events: none;
     width: 5px;
 }
@@ -65,9 +66,12 @@ a3m-wrapper .none {
 }
 
 a3m-wrapper a3m-slot.none {
+    display: -webkit-box;
+    display: -ms-flexbox;
     display: flex;
     background: transparent !important;
     opacity: 0;
+    -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=0)";
     position: fixed;
     bottom: 0;
     left: 0;
@@ -90,4 +94,74 @@ a3m-wrapper .slide {
 a3m-wrapper .slide.slided {
     /* [16:9]=360px < [4:3] = 480px */
     margin-top: -480px;
+}
+
+a3m-target {
+    box-sizing: border-box;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    align-items: center;
+    -webkit-box-pack: justify;
+    -ms-flex-pack: justify;
+    justify-content: space-between;
+    width: 100%;
+    padding: 8px 16px;
+    -webkit-transition-property: background;
+    transition-property: background;
+    -webkit-transition-duration: 2s;
+    transition-duration: 2s;
+    -webkit-transition-delay: 3s;
+    transition-delay: 3s;
+    background: white;
+    border: 1px #3f99ed solid;
+    cursor: pointer;
+}
+
+a3m-target.hidden, a3m-target.hidden a3m-target-text, a3m-target.hidden a3m-target-arrow {
+    transition: none !important;
+    -webkit-transition: none !important;
+}
+
+a3m-target.active {
+    background: #3f99ed;
+}
+
+a3m-target-text {
+    color: #3f99ed;
+    font-family: Arial, sans-serif;
+    font-size: 12px;
+    -webkit-transition-property: color;
+    transition-property: color;
+    -webkit-transition-duration: 2s;
+    transition-duration: 2s;
+    -webkit-transition-delay: 3s;
+    transition-delay: 3s;
+}
+
+a3m-target.active a3m-target-text {
+    color: white;
+}
+
+a3m-target-arrow {
+    background: transparent;
+    padding: 4px;
+    border: 2px solid;
+    border-color: #3f99ed;
+    border-left: 0;
+    border-bottom: 0;
+    -webkit-transform: rotate(45deg);
+    transform: rotate(45deg);
+    -webkit-transition-property: border-color;
+    transition-property: border-color;
+    -webkit-transition-duration: 2s;
+    transition-duration: 2s;
+    -webkit-transition-delay: 3s;
+    transition-delay: 3s;
+}
+
+a3m-target.active a3m-target-arrow {
+    border-color: white;
 }

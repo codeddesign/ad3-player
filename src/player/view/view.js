@@ -3,6 +3,7 @@ import device from '../../utils/device';
 import proportion from '../../utils/proportion';
 import scrolling from '../../utils/scrolling';
 import { referrer } from '../../utils/uri';
+import { decode_uri } from '../../utils/uri';
 import config from '../../../config';
 
 class View {
@@ -17,7 +18,7 @@ class View {
             wrapper(source.id)
         );
 
-        ['backfill', 'fixable', 'container', 'slot.video', 'sound'].forEach((name) => {
+        ['backfill', 'fixable', 'container', 'slot.video', 'sound', 'target'].forEach((name) => {
             const selector = `a3m-${name}`;
 
             this.$els[name] = this.wrapper().find(selector);
@@ -27,11 +28,15 @@ class View {
 
         this.setup();
 
+        this.addTargetListener();
+
         // Set inview to 'true' when in test mode
         if (config.single_tag_testing && referrer.data._tid) {
             config.onscroll.desktop.inview = true;
             config.onscroll.mobile.inview = true;
         }
+
+        this._target_event = false;
     }
 
     /**
@@ -86,6 +91,35 @@ class View {
      */
     sound() {
         return this.get('sound');
+    }
+
+    /**
+     * @return {Element}
+     */
+    target() {
+        return this.get('target');
+    }
+
+    /**
+     * @return {View}
+     */
+    addTargetListener() {
+        this.target().sub('click', () => {
+            if (!this.__player.$selected) {
+                return false;
+            }
+
+            const _selected = this.__player.$selected;
+
+            _selected.videoListener('clickthrough');
+
+            const uri = _selected.creative().clickThrough();
+            if (uri && uri.length) {
+                window.open(this.__player.macro.uri(decode_uri(uri)));
+            }
+        });
+
+        return this;
     }
 
     /**
@@ -193,6 +227,14 @@ class View {
 
         if (campaign.isOnscroll() && this.__onscrollAside()) {
             if (show) {
+                // add none+hidden in case there's no 'clickthrough'
+                this.target().hide(true);
+
+                const uri = this.__player.$selected.creative().clickThrough();
+                if (uri && uri.length) {
+                    this.target().show(true).addClass('active');
+                }
+
                 // sanity call: add/remove custom position
                 this.mustStart();
 
@@ -202,6 +244,8 @@ class View {
 
                 return this;
             }
+
+            this.target().hide().removeClass('active');
 
             this.wrapper().attrRemove('style');
 
@@ -400,7 +444,7 @@ class View {
                 // height: keep proportions; ignore given height if any
                 style.height = proportion(value, this.__player.$selected.proportion()).height;
 
-                this.fixable().style('height', style.height, true);
+                this.fixable().style('min-height', style.height, true);
             }
         });
 
