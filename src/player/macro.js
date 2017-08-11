@@ -1,6 +1,7 @@
 import device from '../utils/device';
 import { referrer } from '../utils/uri';
 import random from '../utils/random';
+import { proportion_minimal } from '../utils/proportion';
 
 class Macro {
     constructor(player) {
@@ -17,6 +18,8 @@ class Macro {
         // random number on each call
         const _random = random();
 
+        const size = proportion_minimal(this.__player.size);
+
         // add extra macros to main ones
         const macros = Object.assign({
             media_id: 'ad3media',
@@ -25,8 +28,8 @@ class Macro {
             referrer_root: referrer.base,
             referrer_url: referrer.simple,
 
-            width: Math.round(this.__player.size.width),
-            height: Math.round(this.__player.size.height),
+            width: Math.round(size.width),
+            height: Math.round(size.height),
 
             campaign_id: this.__player.campaign.id(),
             ip_address: this.__player.campaign.ip(),

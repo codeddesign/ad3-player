@@ -8,6 +8,7 @@ import config from '../../../config';
 import device from '../../utils/device';
 import ajax from '../../utils/ajax';
 import proportion from '../../utils/proportion';
+import { proportion_minimal } from '../../utils/proportion';
 
 class Slot {
     constructor(player, tag) {
@@ -84,10 +85,16 @@ class Slot {
     }
 
     /**
+     * @param {Boolean} before_create
+     *
      * @return {Object}
      */
-    size() {
-        return proportion(this.__player.size.width, this.proportion())
+    size(before_create = false) {
+        if (before_create) {
+            return proportion_minimal(this.__player.size, this.proportion());
+        }
+
+        return proportion(this.__player.size.width)
     }
 
     /**
@@ -163,7 +170,7 @@ class Slot {
 
             this.$element = this.__player.view.container().append('a3m-slot', attributes);
 
-            this.$element.size(this.size());
+            this.$element.size(this.size(true));
 
             this.hide();
 
@@ -337,6 +344,9 @@ class Slot {
                 this._started = true;
                 break;
             case 'videostart':
+                // prepare size
+                this.$element.size(this.size());
+
                 // tracking: filled event for VPAID
                 if (!this.ad()._filled && this.media().isVPAID()) {
                     this.ad()._filled = true;
@@ -357,6 +367,9 @@ class Slot {
                 }
                 break;
             case 'impression':
+                // prepare size (sanity call)
+                this.$element.size(this.size());
+
                 this.__player.tracker.visit();
 
                 // sanity set
