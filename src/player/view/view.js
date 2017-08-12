@@ -230,6 +230,10 @@ class View {
                 // add none+hidden in case there's no 'clickthrough'
                 this.target().hide(true);
 
+                if (!this.__player.$selected) {
+                    return this;
+                }
+
                 const uri = this.__player.$selected.creative().clickThrough();
                 if (uri && uri.length) {
                     this.target().show(true).addClass('active');
@@ -424,9 +428,12 @@ class View {
             style.width = 400;
         }
 
+        if (!this.__player.$selected) {
+            return false;
+        }
+
         // wrapper: keep size
         if (
-            this.__player.$selected &&
             this.__player.$selected.isPlaying() &&
             !this.__player.backfill.revealed() &&
             !this.wrapper().attr('style')
