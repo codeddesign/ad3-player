@@ -154,6 +154,15 @@ class Campaign {
         this.$tags.forEach((tag, index) => {
             tag = new Tag(this.__player, tag);
 
+            // Handle guaranteed tag exception
+            if (!tag.isGuaranteed() && tag.guaranteeLimit()) {
+                if (tag.guaranteedCount() > tag.guaranteeLimit()) {
+                    delete this.$tags[index];
+
+                    return false;
+                }
+            }
+
             if (!tag.canBeLoaded()) {
                 delete this.$tags[index];
 

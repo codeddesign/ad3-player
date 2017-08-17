@@ -147,6 +147,20 @@ class Tag {
     }
 
     /**
+     * @return {Integer}
+     */
+    guaranteedCount() {
+        return this.$guaranteed_count;
+    }
+
+    /**
+     * @return {Integer}
+     */
+    guaranteeLimit() {
+        return this.$guarantee_limit;
+    }
+
+    /**
      * @return {Boolean}
      */
     isActive() {
