@@ -10,13 +10,9 @@ class Source {
         }
 
         const link = parse_uri(script.src),
-            matched = link.file_name.match(/\d+/g) || [1];
+            matched = link.file_name.match(/\d+/g) || false;
 
-        if (!matched.length) {
-            throw new Error(`Source: is missing id '${link.file_name}'.`);
-        }
-
-        this.id = matched[0];
+        this.id = (matched) ? matched[0] : false;
 
         this.path = link.base;
 

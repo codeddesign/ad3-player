@@ -7,49 +7,56 @@ import { decode_uri } from '../../utils/uri';
 import config from '../../../config';
 
 class View {
-    constructor(player, source) {
+    constructor(player, ins) {
         this.__player = player;
 
-        this.$source = source;
+        this.$ins = ins;
 
         this.$els = {};
 
-        this.$els.wrapper = source.script.replaceHtml(
-            wrapper(source.id)
-        );
+        this.setup()
+            .addTargetListener();
+    }
 
-        ['backfill', 'fixable', 'container', 'slot.video', 'sound', 'target'].forEach((name) => {
-            const selector = `a3m-${name}`;
-
-            this.$els[name] = this.wrapper().find(selector);
-        });
-
-        this.saveSize();
-
-        this.setup();
-
-        this.addTargetListener();
-
+    /**
+     * View setup
+     *
+     * @return {View}
+     */
+    setup() {
         // Set inview to 'true' when in test mode
         if (config.single_tag_testing && referrer.data._tid) {
             config.onscroll.desktop.inview = true;
             config.onscroll.mobile.inview = true;
         }
 
-        this._target_event = false;
-    }
+        // replace 'ins' with template
+        this.$els.wrapper = this.$ins.replaceHtml(
+            wrapper(this.$ins.campaign)
+        );
 
-    /**
-     * Save size:
-     * - to instance
-     * - to wrapper as data
-     *
-     * @return {View}
-     */
-    saveSize() {
-        this.__player.size = proportion(this.wrapper().size().width);
+        // add view elements
+        ['backfill', 'fixable', 'container', 'slot.video', 'sound', 'target'].forEach((name) => {
+            const selector = `a3m-${name}`;
 
-        this.wrapper().sizeAsData(this.__player.size);
+            this.$els[name] = this.wrapper().find(selector);
+        });
+
+        // prepare view for campaign type
+        const campaign = this.__player.campaign;
+
+        if (campaign.isOnscroll()) {
+            this.container()
+                .addClass('none nowait')
+                .addClass('slide slided')
+                .removeClass('none nowait', true);
+        }
+
+        if (campaign.isInfinity()) {
+            this.wrapper()
+                .style('top', 0)
+                .style('position', 'sticky');
+        }
 
         return this;
     }
@@ -133,30 +140,6 @@ class View {
         }
 
         return this.$els[name];
-    }
-
-    /**
-     * Prepare view elements.
-     *
-     * @return {View}
-     */
-    setup() {
-        const campaign = this.__player.campaign;
-
-        if (campaign.isOnscroll()) {
-            this.container()
-                .addClass('none nowait')
-                .addClass('slide slided')
-                .removeClass('none nowait', true);
-        }
-
-        if (campaign.isInfinity()) {
-            this.wrapper()
-                .style('top', 0)
-                .style('position', 'sticky');
-        }
-
-        return this;
     }
 
     /**
@@ -402,9 +385,8 @@ class View {
             return false;
         }
 
-        const $script = this.$source.script,
-            mode = device.mobile() ? 'mobile' : 'desktop',
-            styling = $script.attr(`styling-${mode}`) || $script.attr('styling') || 'left: 10, bottom: 10, width: 400',
+        const mode = device.mobile() ? 'mobile' : 'desktop',
+            styling = this.$ins.attr(`styling-${mode}`) || this.$ins.attr('styling') || 'left: 10, bottom: 10, width: 400',
             style = {
                 width: this.__player.size.width
             };

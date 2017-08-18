@@ -394,6 +394,48 @@ class Tag {
     }
 
     /**
+     * @return {Tag}
+     */
+    createSlots() {
+        if (!this.vast()) {
+            return this;
+        }
+
+        const unsupported = {
+                device: 0,
+                player: 0
+            },
+            total = this.vast().ads().total();
+
+        this.vast().ads().forEach((ad) => {
+            const slot = (new Slot(this.__player, this)).create(ad);
+            if (!slot.media()) {
+                unsupported.device++;
+
+                return false;
+            }
+
+            if (!slot.video()) {
+                unsupported.player++;
+
+                return false;
+            }
+
+            this.$slots.push(slot);
+        });
+
+        if (unsupported.device == total) {
+            throw new VastError(405);
+        }
+
+        if (unsupported.player == total) {
+            throw new VastError(403);
+        }
+
+        return this;
+    }
+
+    /**
      * Resets tag.
      *
      * @return {Tag}
@@ -448,7 +490,7 @@ class Tag {
                 throw new VastError(201);
             }
 
-            this._createSlots();
+            this._notifyPlayer();
         } catch (e) {
             if (typeof e.code == 'undefined') {
                 throw e;
@@ -463,9 +505,6 @@ class Tag {
     /**
      * Schedule a tag to load again
      * with the given delay.
-     *
-     * Notifies player when a tag gets loaded and
-     * also has ads using player.tagListener()
      *
      * @param {String} parallel_key
      *
@@ -489,8 +528,6 @@ class Tag {
                     if (this.failed()) {
                         return false;
                     }
-
-                    this._notifyPlayer();
                 });
             }
         }, this.delay());
@@ -499,50 +536,12 @@ class Tag {
     }
 
     /**
-     * Notifies player that tag got updated.
+     * Notifies player that tag was requested and has vast.
      *
      * @return {Tag}
      */
     _notifyPlayer() {
         this.__player.tagListener(this);
-
-        return this;
-    }
-
-    /**
-     * @return {Tag}
-     */
-    _createSlots() {
-        let unsupported = {
-                device: 0,
-                player: 0
-            },
-            total = this.vast().ads().total();
-
-        this.vast().ads().forEach((ad) => {
-            const slot = (new Slot(this.__player, this)).create(ad);
-            if (!slot.media()) {
-                unsupported.device++;
-
-                return false;
-            }
-
-            if (!slot.video()) {
-                unsupported.player++;
-
-                return false;
-            }
-
-            this.$slots.push(slot);
-        });
-
-        if (unsupported.device == total) {
-            throw new VastError(405);
-        }
-
-        if (unsupported.player == total) {
-            throw new VastError(403);
-        }
 
         return this;
     }

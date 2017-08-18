@@ -4,30 +4,43 @@ import Campaign from './campaign/campaign';
 import View from './view/view';
 import Backfill from './view/backfill';
 import device from '../utils/device';
+import { proportion_minimal } from '../utils/proportion';
 import $ from '../utils/element';
+import elementObserver from '../utils/element_observer';
 
 class Player {
-    constructor(campaign, source) {
-        this.macro = new Macro(this);
-        this.tracker = new Tracker(this);
-
-        this.campaign = new Campaign(this, campaign);
-        this.view = new View(this, source);
-        this.backfill = new Backfill(this);
-
-        this.campaign.requestTags()
-            .then((tags) => {
-                this.tags = tags;
-
-                // console.log(this);
-
-                // Don't wait for user events
-                this.play();
-            });
-
+    constructor(campaign) {
         this.$selected = false;
 
-        this._addWindowListeners();
+        this.size = proportion_minimal({ width: 0 });
+
+        this.macro = new Macro(this);
+        this.tracker = new Tracker(this);
+        this.campaign = new Campaign(this, campaign);
+
+        // Campaign: request tags
+        this.campaign.requestTags();
+
+        // Workflow: wait for element to exist
+        const selector = `a3m-ins[campaign="${this.campaign.id()}"]`;
+        elementObserver.listen(selector, (element) => {
+            element.campaign = element.attr('campaign');
+
+            // View: initiate
+            this.view = new View(this, element);
+
+            // Backfill: initiate
+            this.backfill = new Backfill(this);
+
+            // Window: add listeners
+            this._addWindowListeners();
+
+            // Campaign: create tags slots
+            this.campaign.createTagsSlots();
+
+            // Workflow: don't wait for user events
+            this.play();
+        });
     }
 
     /**
@@ -40,7 +53,7 @@ class Player {
 
         this.$selected = false;
 
-        (this.tags || []).forEach((tag) => {
+        this.campaign.tags().forEach((tag) => {
             tag.slots().forEach((slot) => {
                 if (this.$selected || !slot.isLoaded()) {
                     return false;
@@ -88,9 +101,16 @@ class Player {
      * @return {Player}
      */
     tagListener(tag) {
-        console.info(`Tag with id #${tag.id()} updated.`);
+        // console.warn(`Tag with id #${tag.id()} updated.`);
 
-        // Don't wait for user events
+        if (!this.view) {
+            return this;
+        }
+
+        // Tag: create slots
+        tag.createSlots();
+
+        // Workflow: don't wait for user events
         this.play();
 
         return this;
@@ -161,7 +181,7 @@ class Player {
             this.view.transition(false);
         }
 
-        if (!this.tags || !this.selected()) {
+        if (!this.campaign.tags() || !this.selected()) {
             return this;
         }
 

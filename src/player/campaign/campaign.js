@@ -216,20 +216,25 @@ class Campaign {
     /**
      * Request campaign's tags.
      *
-     * @return {Promise}
+     * @return {Campaign}
      */
     requestTags() {
-        return new Promise((resolve, reject) => {
-            const tags = [];
-
-            this.tags().forEach((tag) => {
-                tag.request();
-
-                tags.push(tag);
-            });
-
-            resolve(tags);
+        this.tags().forEach((tag) => {
+            tag.request();
         });
+
+        return this;
+    }
+
+    /**
+     * @return {Campaign}
+     */
+    createTagsSlots() {
+        this.tags().forEach((tag) => {
+            tag.createSlots();
+        });
+
+        return this;
     }
 }
 

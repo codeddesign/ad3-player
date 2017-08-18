@@ -1,4 +1,3 @@
-import Player from './player';
 import vastLoadXML from '../vast/base';
 import ajax from '../utils/ajax';
 import device from '../utils/device';
@@ -9,30 +8,24 @@ import config from '../../config';
 /**
  * Makes a request to campaign uri.
  *
- * @param {Source} source
+ * @param {Integer|string} campaign_id
  */
-export const request_campaign = (source) => {
-    let uri = `${config.app_path}/campaign/${source.id}?_rd=${random()}&platform=${device.mobile() ? 'mobile' : 'desktop'}&referrer=${referrer.base}`;
+export const request_campaign = (campaign_id) => {
+    let uri = `${config.app_path}/campaign/${campaign_id}?_rd=${random()}&platform=${device.mobile() ? 'mobile' : 'desktop'}&referrer=${referrer.base}`;
 
     if (config.single_tag_testing && referrer.data._tid) {
         uri += `&test=${referrer.data._tid}`;
     }
 
-    ajax().campaign(uri)
-        .then((response) => {
-            const __player = new Player(response.text, source);
-
-            setTimeout(() => {
-                __player.tracker.visit();
-            }, config.timeout.visit_minimum * 1000);
-
-            __player.tracker.campaign(response.status);
-        })
-        .catch((e) => {
-            console.error(e);
-
-            // @todo: add tracking
-        });
+    return new Promise((resolve, reject) => {
+        ajax().campaign(uri)
+            .then((response) => {
+                resolve(response);
+            })
+            .catch((e) => {
+                reject(e);
+            });
+    });
 };
 
 /**
