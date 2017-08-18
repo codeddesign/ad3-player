@@ -346,7 +346,9 @@ class Tag {
     request() {
         this._reset();
 
-        if (config.limit.max_requests && config.limit.max_requests < this.attempts()) {
+        var { key, vast } = this.parallelRequestVast();
+
+        if (!vast && config.limit.max_requests && config.limit.max_requests < this.attempts()) {
             return false;
         }
 
