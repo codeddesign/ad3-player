@@ -1,28 +1,32 @@
 {
-    "scripts": {
-        "rollup": "npm run rollup-player",
-        "rollup-dev": "npm run rollup-player -- --environment build:dev -w",
-        "rollup-player": "./node_modules/.bin/rollup -c --input src/player/base.js --output dist/assets/js/player.js",
-        "test": "./node_modules/.bin/mocha --compilers js:babel-core/register",
-        "test-watch": "npm run test -- --watch",
-        "test-all": "./node_modules/.bin/mocha --compilers js:babel-core/register test/**/test*.js",
-        "test-all-watch": "npm run test-all -- --watch"
-    },
-    "devDependencies": {
-        "babel-loader": "^6.2.5",
-        "babel-preset-es2015": "^6.16.0",
-        "babel-preset-es2015-rollup": "^1.2.0",
-        "chai": "^3.5.0",
-        "cssnano": "^3.10.0",
-        "mocha": "^3.1.2",
-        "rollup": "^0.36.3",
-        "rollup-plugin-babel": "^2.6.1",
-        "rollup-plugin-commonjs": "^5.0.5",
-        "rollup-plugin-node-resolve": "^2.0.0",
-        "rollup-plugin-postcss": "^0.5.3",
-        "rollup-plugin-replace": "^1.1.1",
-        "rollup-plugin-uglify": "^1.0.1",
-        "rollup-watch": "^2.5.0"
-    },
-    "dependencies": {}
+  "scripts": {
+    "rollup": "npm run rollup-player",
+    "rollup-dev": "npm run rollup-player -- --environment build:dev -w",
+    "rollup-player": "./node_modules/.bin/rollup -c --input src/player/base.js --output dist/assets/js/player.js",
+    "prebidjs": "npm run task-prebidjs-install && npm run task-prebidjs-build && npm run task-prebidjs-copy",
+    "task-prebidjs-install": "git clone https://github.com/prebid/Prebid.js.git dist/pbjs && npm --prefix ./dist/pbjs install ./dist/pbjs",
+    "task-prebidjs-build": "./dist/pbjs/node_modules/.bin/gulp --gulpfile ./dist/pbjs/gulpfile.js build --modules=../../adapters.json",
+    "task-prebidjs-copy": "cp ./dist/pbjs/build/dist/prebid.js ./dist/assets/js/prebid.js",
+    "test": "./node_modules/.bin/mocha --compilers js:babel-core/register",
+    "test-watch": "npm run test -- --watch",
+    "test-all": "./node_modules/.bin/mocha --compilers js:babel-core/register test/**/test*.js",
+    "test-all-watch": "npm run test-all -- --watch"
+  },
+  "devDependencies": {
+    "babel-loader": "^6.2.5",
+    "babel-preset-es2015": "^6.16.0",
+    "babel-preset-es2015-rollup": "^1.2.0",
+    "chai": "^3.5.0",
+    "cssnano": "^3.10.0",
+    "mocha": "^3.1.2",
+    "rollup": "^0.36.3",
+    "rollup-plugin-babel": "^2.6.1",
+    "rollup-plugin-commonjs": "^5.0.5",
+    "rollup-plugin-node-resolve": "^2.0.0",
+    "rollup-plugin-postcss": "^0.5.3",
+    "rollup-plugin-replace": "^1.1.1",
+    "rollup-plugin-uglify": "^1.0.1",
+    "rollup-watch": "^2.5.0"
+  },
+  "dependencies": {}
 }

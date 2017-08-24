@@ -2,7 +2,7 @@ import Macro from './macro';
 import Tracker from './tracker/tracker';
 import Campaign from './campaign/campaign';
 import View from './view/view';
-import Backfill from './view/backfill';
+import Backfill from './backfill/backfill'
 import device from '../utils/device';
 import { proportion_minimal } from '../utils/proportion';
 import $ from '../utils/element';
@@ -17,6 +17,7 @@ class Player {
         this.macro = new Macro(this);
         this.tracker = new Tracker(this);
         this.campaign = new Campaign(this, campaign);
+        this.backfill = new Backfill(this);
 
         // Campaign: request tags
         this.campaign.requestTags();
@@ -29,8 +30,8 @@ class Player {
             // View: initiate
             this.view = new View(this, element);
 
-            // Backfill: initiate
-            this.backfill = new Backfill(this);
+            // Backfill: create
+            this.backfill.create('view');
 
             // Window: add listeners
             this._addWindowListeners();
@@ -176,6 +177,8 @@ class Player {
      * @return {Player}
      */
     play(byUser = false) {
+        // return false;
+
         // transition: if none selected
         if (!this.selected()) {
             this.view.transition(false);

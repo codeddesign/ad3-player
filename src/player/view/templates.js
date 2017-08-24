@@ -15,8 +15,32 @@ export const wrapper = (campaign_id) => {
     </a3m-wrapper>`
 };
 
-export const iframe_template = (width = '100%', height = '100%') => {
-    return `<iframe frameborder="0" seamless="seamless" scrolling="no"
-     allowtransparency="true" allowfullscreen="true"
-     marginwidth="0" marginheight="0" vspace="0" hspace="0" width="${width}" height="${height}"></iframe>`;
+/**
+ * @param {Integer|String} width
+ * @param {Integer|String} height
+ * @param {bool} source
+ *
+ * @return {String}
+ */
+export const iframe_template = (width = '100%', height = '100%', source = false) => {
+    if (width != '100%') {
+        width = `${width}px`;
+    }
+
+    if (height != '100%') {
+        height = `${height}px`;
+    }
+
+    let template = `<iframe frameborder="0" seamless="seamless" scrolling="no"
+        allowtransparency="true" allowfullscreen="true"
+        marginwidth="0" marginheight="0" vspace="0" hspace="0"
+        width="${width}" height="${height}"`;
+
+    if (source) {
+        template += ` src="${source}"`;
+    }
+
+    template += '></iframe>';
+
+    return template;
 };

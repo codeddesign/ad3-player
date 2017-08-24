@@ -86,5 +86,32 @@ export default {
     // Custom limits
     limit: {
         max_requests: 5
+    },
+
+    // Prebidjs configuration
+    prebidjs: {
+        assets: [{
+            name: 'pbjs',
+            tag: 'script',
+            attributes: {
+                src: `http://a3m.dev/prebid.js`,
+                async: 'true'
+            }
+        }],
+
+        // all supported sizes when provider has no specific one/s
+        default_sizes: [
+            '300x250',
+            '336x280'
+        ],
+
+        // timeouts in seconds
+        timeout: {
+            desktop: 2,
+            mobile: 2
+        },
+
+        // expires
+        cache_expiration: 12 // number of hours
     }
 };

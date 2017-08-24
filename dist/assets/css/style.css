@@ -96,6 +96,10 @@ a3m-wrapper .slide.slided {
     margin-top: -480px;
 }
 
+a3m-backfill iframe {
+    margin: 0 auto;
+}
+
 a3m-target {
     box-sizing: border-box;
     display: -webkit-box;

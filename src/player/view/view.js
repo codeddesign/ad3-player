@@ -42,6 +42,9 @@ class View {
             this.$els[name] = this.wrapper().find(selector);
         });
 
+        // save size as data on wrapper
+        this.wrapper().sizeAsData(this.__player.size);
+
         // prepare view for campaign type
         const campaign = this.__player.campaign;
 
@@ -187,7 +190,7 @@ class View {
 
             this.container().addClass('slided');
 
-            if (this.__player.backfill.created()) {
+            if (this.__player.backfill.filled()) {
                 this.__player.backfill.show();
 
                 if (this.__player.backfill.revealed()) {

@@ -1,30 +1,3 @@
-/**
- * Creates a virtual element with properties and event listeners.
- */
-export const create = (tag, properties = {}, events = {}) => {
-    let virtual = document.createElement(tag);
-
-    Object.keys(properties).forEach((key) => {
-        if (key.includes('data')) {
-            Object.keys(properties[key]).forEach((_key) => {
-                virtual.dataset[_key] = properties[key][_key];
-            });
-
-            return false;
-        }
-
-        virtual.setAttribute(key, properties[key]);
-    });
-
-    Object.keys(events).forEach((key) => {
-        virtual[key] = () => {
-            events[key].apply(virtual)
-        };
-    });
-
-    return virtual;
-}
-
 const CSS_CLASSES = {
     hidden: 'hidden',
     none: 'none'
@@ -33,7 +6,7 @@ const CSS_CLASSES = {
 /**
  * Minimal jQuery-like custom class.
  */
-class Element {
+export class Element {
     constructor(node) {
         if (typeof node == 'string') {
             node = (new Element(document).find(node)).node;
@@ -42,6 +15,43 @@ class Element {
         this.node = node || document;
 
         return this;
+    }
+
+    addAssets(assets = []) {
+        const promises = [];
+
+        const head = this.find('head');
+
+        assets.forEach((asset) => {
+            const promise = new Promise((resolve, reject) => {
+                asset.events = {
+                    onload() {
+                        resolve(asset.name);
+                    }
+                }
+
+                const asset_source = (asset.attributes['href']) ? 'href' : 'src',
+                    selector = `${asset.tag}[${asset_source}="${asset.attributes[asset_source]}"]`;
+
+                if (!head.find(selector, false)) {
+                    head.append(asset.tag, asset.attributes, asset.events);
+
+                    return this;
+                }
+
+                resolve();
+            });
+
+            promises.push(promise);
+        });
+
+        Promise.all(promises)
+            .then((names) => {})
+            .catch((e) => {});
+
+        return new Promise((resolve, reject) => {
+            resolve()
+        });
     }
 
     find(selector, hasWarning = true) {
@@ -209,8 +219,32 @@ class Element {
         return this;
     }
 
+    create(tag, properties = {}, events = {}) {
+        let virtual = document.createElement(tag);
+
+        Object.keys(properties).forEach((key) => {
+            if (key.includes('data')) {
+                Object.keys(properties[key]).forEach((_key) => {
+                    virtual.dataset[_key] = properties[key][_key];
+                });
+
+                return false;
+            }
+
+            virtual[key] = properties[key];
+        });
+
+        Object.keys(events).forEach((key) => {
+            virtual[key] = () => {
+                events[key].apply(virtual)
+            };
+        });
+
+        return virtual;
+    }
+
     append(tag, properties, events) {
-        let virtual = create(tag, properties, events);
+        let virtual = this.create(tag, properties, events);
 
         this.node.appendChild(virtual);
 
@@ -218,7 +252,7 @@ class Element {
     }
 
     after(tag, properties, events, remove = false) {
-        let virtual = create(tag, properties, events);
+        let virtual = this.create(tag, properties, events);
 
         this.parent().node.insertBefore(virtual, this.node.nextSibling);
 
@@ -234,7 +268,7 @@ class Element {
     }
 
     replaceHtml(content) {
-        let virtual = create('div'),
+        let virtual = this.create('div'),
             fresh;
 
         virtual.innerHTML = content.trim();
