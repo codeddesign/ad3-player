@@ -154,6 +154,13 @@ class Player {
                     this.view.transition();
                 }
                 break;
+            case 'volumechange':
+                if (!slot.element().hasClass('interacting')) {
+                    // console.warn('Mute: no user interaction.');
+
+                    slot.video().volume(false);
+                }
+                break;
             case 'skipped':
             case 'stopped':
             case 'complete':
@@ -256,6 +263,8 @@ class Player {
         this.view.sound()
             .sub('click', (ev, $el) => {
                 if (_isPlaying()) {
+                    this.selected().element().addClass('interacting');
+
                     this.selected().video().volume(
                         $el.hasClass('off')
                     );
@@ -272,12 +281,16 @@ class Player {
             this.view.container()
                 .sub('mouseover', () => {
                     if (_isPlaying()) {
+                        this.selected().element().addClass('interacting');
+
                         this.selected().video().volume(true);
                     }
                 })
                 .sub('mouseout', () => {
                     if (_isPlaying()) {
                         this.selected().video().volume(false);
+
+                        this.selected().element().removeClass('interacting');
                     }
                 });
         }
