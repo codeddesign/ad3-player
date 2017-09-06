@@ -336,6 +336,9 @@ class Slot {
                     this.ad()._temporary_vpaid = true;
 
                     this.video().start();
+                    this._volumeInterval = setInterval(() => {
+                        this.video().volume(false);
+                    }, 100);
                 }
                 break;
             case 'started':
@@ -398,6 +401,8 @@ class Slot {
             case 'stopped':
             case 'complete':
             case 'error':
+                clearInterval(this._volumeInterval);
+
                 Cache.remove(this.__tag.vast()._cacheKey);
 
                 this.ad()._used = true;
