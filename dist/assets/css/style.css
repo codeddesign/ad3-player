@@ -1,6 +1,6 @@
 a3m-wrapper {
     all: revert;
-    background: #fff;
+    background: none;
 }
 
 a3m-wrapper, a3m-container, a3m-slot, a3m-fixable, a3m-backfill {
