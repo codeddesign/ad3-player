@@ -472,6 +472,10 @@ class Tag {
      * @return {Tag}
      */
     _schedule(parallel_key) {
+        if (this.__player._is_closed) {
+            return this;
+        }
+
         if (this.$scheduled || this.$firstRequest || !this.finished()) {
             return this;
         }
@@ -483,6 +487,10 @@ class Tag {
         this.$scheduled = true;
 
         setTimeout(() => {
+            if (this.__player._is_closed) {
+                return false;
+            }
+
             const promise = this.request();
             if (promise) {
                 promise.then(() => {

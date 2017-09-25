@@ -7,6 +7,7 @@ export const wrapper = (campaign_id) => {
         </a3m-backfill>
         <a3m-fixable>
             <a3m-container>
+                <a3m-close class="hidden"></a3m-close>
                 <a3m-slot class="video none"></a3m-slot>
                 <a3m-sound class="hidden off"></a3m-sound>
             </a3m-container>

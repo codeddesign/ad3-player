@@ -30,6 +30,13 @@ class Campaign {
     /**
      * @return {Boolean}
      */
+    isCloseable() {
+        return this.$closeable;
+    }
+
+    /**
+     * @return {Boolean}
+     */
     startsWithSound() {
         const info = this.__typeInfo();
 

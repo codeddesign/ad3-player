@@ -40,6 +40,10 @@ class Player {
 
         this.$selected = false;
 
+        if (this._is_closed) {
+            return false;
+        }
+
         (this.tags || []).forEach((tag) => {
             tag.slots().forEach((slot) => {
                 if (this.$selected || !slot.isLoaded()) {
@@ -249,6 +253,12 @@ class Player {
                     $el.toggleClasses('on', 'off');
                 }
             });
+
+        this.view.closeButton().sub('click', (ev, $el) => {
+            this._is_closed = true;
+
+            this.selected().video().skip();
+        });
 
         $().sub('scroll', () => {
             this.play(device.mobile());

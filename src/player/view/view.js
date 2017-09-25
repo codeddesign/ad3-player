@@ -18,7 +18,7 @@ class View {
             wrapper(source.id)
         );
 
-        ['backfill', 'fixable', 'container', 'slot.video', 'sound', 'target'].forEach((name) => {
+        ['backfill', 'fixable', 'container', 'slot.video', 'sound', 'target', 'close'].forEach((name) => {
             const selector = `a3m-${name}`;
 
             this.$els[name] = this.wrapper().find(selector);
@@ -91,6 +91,13 @@ class View {
      */
     sound() {
         return this.get('sound');
+    }
+
+    /**
+     * @return {Element}
+     */
+    closeButton() {
+        return this.get('close');
     }
 
     /**
@@ -190,6 +197,18 @@ class View {
      */
     transition(show = true) {
         const campaign = this.__player.campaign;
+
+        if (campaign.isCloseable()) {
+            clearTimeout(this._showing_close);
+
+            if (!show) {
+                this.closeButton().hide();
+            } else {
+                this._showing_close = setTimeout(() => {
+                    this.closeButton().show();
+                }, config.timeout.close_button * 1000);
+            }
+        }
 
         if (campaign.isOnscroll() && this.__onscrollBasic()) {
             if (show) {

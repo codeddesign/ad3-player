@@ -61,6 +61,16 @@ a3m-wrapper a3m-sound.off {
     background: url('_CSS_CDN_/assets/images/soundoff.png');
 }
 
+a3m-wrapper a3m-close {
+    width: 16px;
+    height: 16px;
+    right: 20px;
+    top: 20px;
+    position: absolute;
+    cursor: pointer;
+    background: url('_CSS_CDN_/assets/images/closebutton.png') no-repeat;
+}
+
 a3m-wrapper .none {
     display: none;
 }
