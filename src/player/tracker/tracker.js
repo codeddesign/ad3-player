@@ -62,6 +62,10 @@ class Tracker {
      * @return {Tracker}
      */
     app(info = {}, extra = {}, addExtra = false) {
+        if (!this.__player.view.hasWrapper()) {
+            return this;
+        }
+
         if (!this.__player.campaign) {
             return this;
         }

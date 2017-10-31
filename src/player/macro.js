@@ -18,7 +18,10 @@ class Macro {
         // random number on each call
         const _random = random();
 
-        const size = proportion_minimal(this.__player.size);
+        let size = { width: 0, height: 0 }
+        if (this.__player.view.hasWrapper()) {
+            size = proportion_minimal(this.__player.size);
+        }
 
         // add extra macros to main ones
         const macros = Object.assign({

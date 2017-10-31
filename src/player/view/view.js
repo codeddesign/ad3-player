@@ -18,6 +18,12 @@ class View {
             wrapper(source.id)
         );
 
+        if (!this.hasWrapper()) {
+            console.error('a3m embed error #1 [a3mdynamic]');
+
+            return false;
+        }
+
         ['backfill', 'fixable', 'container', 'slot.video', 'sound', 'target', 'close'].forEach((name) => {
             const selector = `a3m-${name}`;
 
@@ -52,6 +58,13 @@ class View {
         this.wrapper().sizeAsData(this.__player.size);
 
         return this;
+    }
+
+    /**
+     * @return {Boolean}
+     */
+    hasWrapper() {
+        return this.$els.wrapper;
     }
 
     /**

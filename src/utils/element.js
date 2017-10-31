@@ -239,11 +239,26 @@ class Element {
 
         virtual.innerHTML = content.trim();
 
-        this.parent().node.insertBefore(virtual.firstChild, this.node.nextSibling);
+        let $el = this;
+        if (!this.node.parentNode) {
+            for (let script of this.parent().node.scripts) {
+                script = new Element(script);
 
-        fresh = this.node.nextSibling;
+                if (script.attr('a3mdynamic')) {
+                    $el = script;
+                }
+            }
 
-        this.node.remove();
+            if (!$el.node.parentNode) {
+                return false;
+            }
+        }
+
+        $el.parent().node.insertBefore(virtual.firstChild, $el.node.nextSibling);
+
+        fresh = $el.node.nextSibling;
+
+        $el.node.remove();
 
         return new Element(fresh);
     }

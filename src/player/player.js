@@ -167,6 +167,10 @@ class Player {
      * @return {Player}
      */
     play(byUser = false) {
+        if (!this.view.hasWrapper()) {
+            return this;
+        }
+
         // transition: if none selected
         if (!this.selected()) {
             this.view.transition(false);
@@ -214,13 +218,16 @@ class Player {
         return this;
     }
 
-
     /**
      * Add DOM event listeners.
      *
      * @return {Player}
      */
     _addWindowListeners() {
+        if (!this.view.hasWrapper()) {
+            return this;
+        }
+
         const _isPlaying = () => {
             return this.selected() && this.selected().isPlaying();
         }
