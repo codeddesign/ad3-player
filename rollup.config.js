@@ -72,7 +72,7 @@ process.argv.forEach((name, index) => {
         plugins.unshift(
             postcss({
                 extensions: ['.css'],
-                plugins: [cssnano()]
+                plugins: [cssnano({ zindex: false })]
             })
         );
     }
